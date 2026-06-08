@@ -1,0 +1,25 @@
+craete a notes app
+use local memory - LIST for storing all the notes
+notes should contain - {id:int, title:str ,messages:str}
+create functions/routes/APIs to - 
+1- create note
+2- get all notes
+3- get single note by id
+4- update note by id
+5- delete note by id
+
+id should be unique
+test all APIs in postman.
+
+
+addons-
+1- add created_at and updated_at      --- some content is updarted and some are not so it will create data imbalance
+2- craete API for search with name
+3- add pagination
+
+
+ "due_date": "2026-07-15T18:30:00"
+
+"username":"Ankit123",
+    "email":"ankit5@test.com",
+    "password":"Password123"
