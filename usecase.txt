@@ -20,6 +20,47 @@ addons-
 
  "due_date": "2026-07-15T18:30:00"
 
-"username":"Ankit123",
-    "email":"ankit5@test.com",
+ {
+    "email":"ankit6268@test.com",
     "password":"Password123"
+}
+id=9
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc4MTAzMDMzMiwianRpIjoiNzE5YWY0NDYtZTMyOS00YTg5LWJmYTAtOTQ2ZmJjNWI5NGM3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjkiLCJuYmYiOjE3ODEwMzAzMzIsImNzcmYiOiI0MGJhYTFhMy0wN2EwLTQzZTYtYTljZi1mZWExZjQ4NjA4YzQiLCJleHAiOjE3ODE2MzUxMzJ9.htPSxoW34ZOdhyKmufpn-r4QO0MkHToy8Xv5QatKvxM",
+    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc4MTAzMDMzNCwianRpIjoiYWQwMzI3ZGMtMDMzYS00MDBiLWExZDAtZGI5YWEwYmI1NmM1IiwidHlwZSI6InJlZnJlc2giLCJzdWIiOiI5IiwibmJmIjoxNzgxMDMwMzM0LCJjc3JmIjoiMGY5M2MyN2QtMzA5ZC00ZjMyLTlhZmItMzgwNWNiODE5YTZiIiwiZXhwIjoxNzgzNjIyMzM0fQ.l1e4VaXMWem7TXfIW_J5GE--Ky0MsVfXOVfnIHY2UIc"
+}
+
+
+
+level 3
+1 - pagination,searching, filtering and all
+2 - error handling
+3- logging
+4- testing using,pytest,unit test, integration test
+
+level 4
+1- Role based control - Admin, user, moderator
+ - soft delete and all
+ 2-audit fields
+ 3- DB indexing
+ 4- caching using Redis
+
+level 5
+1- Async Processing using celery
+2- file upload and S3 and cloudinary
+3- Email service/OTp service for logging and Push notification service
+
+level 6 
+1- design pattern
+   - Repository patter, factory pattern, service pattern
+2- dependency injection
+3- API versoning
+4- Rate limiting - using flask limiter
+5- Monitoring - Prometheus,Grafana
+
+level 7 Deployment
+level 8 system design
+1- Scalability
+2- caching
+3- DB sharding
+4- Message Queue - kafka   , rabbitMQ

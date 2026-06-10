@@ -3,6 +3,7 @@ from flask import Flask
 from app.config import Config
 from app.routes import note_bp, user_bp,auth_bp
 from app.extensions import db,migrate,jwt
+from app.errors import register_error_handlers
 
 def create_app():
     app = Flask(__name__)
@@ -13,4 +14,5 @@ def create_app():
     app.register_blueprint(note_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(auth_bp)
+    register_error_handlers(app)
     return app

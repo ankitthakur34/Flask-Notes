@@ -2,6 +2,8 @@ from flask import Blueprint, request
 from flask_jwt_extended import create_access_token,create_refresh_token, jwt_required, get_jwt_identity
 
 from app.services.auth_service import register_user, login_user
+from app.schemas import RegisterSchema,LoginSchema
+from app.exceptions import auth_exception
 
 auth_bp = Blueprint("auth_bp", __name__)
 
@@ -9,7 +11,8 @@ auth_bp = Blueprint("auth_bp", __name__)
 @auth_bp.route("/register", methods=["POST"])
 def register():
 
-    data = request.get_json()
+    
+    data = RegisterSchema().load(request.get_json())
     
     user = register_user(data)
 
@@ -22,12 +25,12 @@ def register():
 @auth_bp.route("/login", methods=["POST"])
 def login():
 
-    data = request.get_json()
+    data = LoginSchema().load(request.get_json())
 
     user = login_user(data)
 
     if not user:
-        return {"message": "Invalid credentials"}, 401
+        raise auth_exception.InvalidCredentialsException()
 
     token = create_access_token(identity=str(user.id))
     refresh_token = create_refresh_token(identity=str(user.id))

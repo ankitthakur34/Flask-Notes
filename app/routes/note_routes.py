@@ -2,6 +2,9 @@
 from app.services import create_note, get_all_notes, get_note_by_id, update_note, delete_note, get_notes_pagination, search_bytitle
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.schemas import NoteCreateSchema, NoteUpdateSchema
+from app.exceptions import note_exception
+
 
 note_bp = Blueprint('note_bp', __name__)
 
@@ -13,13 +16,11 @@ def home():
 @jwt_required()
 def create_note_route():
     user_id = get_jwt_identity()
-    data = request.get_json()
-    print("HEADERS:", request.headers)
-    print("DATA:", request.get_json())
-    print("USER:", get_jwt_identity())
     
-    if not data or not data.get('title') or not data.get('content'):
-        return jsonify({'error': 'Title and content are required'}), 400
+    data = NoteCreateSchema().load(
+        request.get_json()
+    )
+
     note_data = {
        "title": data.get("title"),
         "content": data.get("content"),
@@ -31,9 +32,7 @@ def create_note_route():
         # IMPORTANT
         "user_id": user_id
     }
-    print("HEADERS:", request.headers)
-    print("DATA:", request.get_json())
-    print("USER:", get_jwt_identity())
+   
     note = create_note(note_data)
     return {
         'message': 'Note created successfully',
@@ -79,9 +78,7 @@ def get_single_note(note_id):
     note = get_note_by_id(note_id, user_id)
     if not note:
 
-        return {
-            "error": "Note not found"
-        }, 404
+        raise note_exception.NoteNotFoundException()
 
     return note.to_dict()
 
@@ -91,15 +88,13 @@ def get_single_note(note_id):
 @jwt_required()
 def edit_note(note_id):
     user_id = get_jwt_identity()
-    data = request.get_json()
+    data = NoteUpdateSchema().load(request.get_json())
 
     note = update_note(note_id, data,user_id)
 
     if not note:
 
-        return {
-            "error": "Note not found"
-        }, 404
+        raise note_exception.NoteNotFoundException()
 
     return {
         "message": "Note updated",
@@ -116,9 +111,7 @@ def remove_note(note_id):
 
     if not deleted:
 
-        return {
-            "error": "Note not found"
-        }, 404
+        raise note_exception.NoteNotFoundException()
 
     return {
         "message": "Note deleted"
