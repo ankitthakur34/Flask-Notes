@@ -26,6 +26,49 @@ def get_all_notes(user_id):
 
     return notes_repositories.get_all_users_notes(user_id)
 
+# note_service.py
+
+
+
+def get_notes_filter(
+    user_id,
+    page=1,
+    limit=10,
+    priority=None,
+    search=None,
+    sort="desc"
+):
+
+    query = notes_repositories.get_notes_query(user_id)
+
+    # Filtering
+    if priority:
+        query = query.filter(
+            Note.priority.ilike(priority)
+        )
+
+    # Search
+    if search:
+        query = query.filter(
+            Note.title.ilike(f"%{search}%")
+        )
+
+    # Sorting
+    if sort == "asc":
+        query = query.order_by(
+            Note.created_at.asc()
+        )
+    else:
+        query = query.order_by(
+            Note.created_at.desc()
+        )
+
+    return query.paginate(
+        page=page,
+        per_page=limit,
+        error_out=False
+    )
+
 def get_notes_pagination(user_id, page, limit):
 
     return Note.query.filter_by(
@@ -36,32 +79,27 @@ def get_notes_pagination(user_id, page, limit):
         error_out=False
     ).items
 
-def search_bytitle(title, user_id):
 
-    return Note.query.filter(
-        Note.user_id == user_id,
-        Note.title.ilike(f"%{title}%")
-    ).all()
 
 def get_note_by_id(note_id, user_id):
-        return notes_repositories.get_notes_by_id(note_id, user_id)
+        return notes_repositories.get_note_by_id(note_id, user_id)
 
 def update_note(note_id, data, user_id):
-    note = notes_repositories.get_notes_by_id(note_id, user_id)
-    if note:  
-        note.title=data.get('title',note.title)
-        note.content=data.get('content',note.content)
-        note.category=data.get('category',note.category)
-        note.priority=data.get('priority',note.priority)    
-        note.is_completed=data.get('is_completed',note.is_completed)
-        note.due_date=data.get('due_date',note.due_date)
-        db.session.commit()
-        return note
-    return None
+    note = notes_repositories.get_note_by_id(note_id, user_id)
+    
+    note.title=data.get('title',note.title)
+    note.content=data.get('content',note.content)
+    note.category=data.get('category',note.category)
+    note.priority=data.get('priority',note.priority)    
+    note.is_completed=data.get('is_completed',note.is_completed)
+    note.due_date=data.get('due_date',note.due_date)
+    db.session.commit()
+    return note
+    
 
 def delete_note(note_id, user_id):
-    note = notes_repositories.get_notes_by_id(note_id, user_id)
-    if note:
-        notes_repositories.note_delete(note)
-        return True
-    return False
+    note = notes_repositories.get_note_by_id(note_id, user_id)
+   
+    notes_repositories.note_delete(note)
+    return True
+    

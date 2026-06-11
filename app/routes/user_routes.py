@@ -4,7 +4,8 @@ from app.exceptions import user_exception
 from app.repositories import user_repositories
 from app.services.user_service import (
     get_all_users,
-    get_user_notes
+    get_user_notes,
+    get_user_by_id
 )
 from app.exceptions import user_exception
 from app.logging_config import logger
@@ -21,7 +22,7 @@ user_bp = Blueprint(
 def get_users_route():
 
     users = get_all_users()
-
+    logger.info(f"Fetching all users: {len(users)} users found")
     return {
         "data": users
     }, 200
@@ -29,11 +30,10 @@ def get_users_route():
 @user_bp.route("/users/<int:user_id>", methods=["GET"])
 def get_user_route(user_id):
 
-    user = user_repositories.get_user_by_id(user_id)
+    user = get_user_by_id(user_id)
     logger.info(f"Fetching user: {user}")
-    if not user:
-       raise user_exception.UserNotFoundException()
-
+    
+    logger.info(f"User retrieved: {user.username} with email: {user.email}")
     return {
         "data": user.to_dict()
     }, 200
@@ -43,8 +43,7 @@ def get_user_notes_route(user_id):
 
     notes = get_user_notes(user_id)
 
-    if notes is None:
-        raise user_exception.UserNotFoundException()
+    logger.info(f"Fetching notes for user_id: {user_id} - {len(notes)} notes found")
 
     return {
         'notes': [note.to_dict() for note in notes]

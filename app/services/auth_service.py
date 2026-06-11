@@ -1,5 +1,7 @@
+from app.exceptions import auth_exception
 from app.models import User
 from app.extensions import db
+
 
 
 def register_user(data):
@@ -22,9 +24,9 @@ def login_user(data):
     user = User.query.filter_by(email=data["email"]).first()
 
     if not user:
-        return None
+        raise auth_exception.InvalidCredentialsException()
 
     if not user.check_password(data["password"]):
-        return None
+        raise auth_exception.InvalidCredentialsException()
 
     return user

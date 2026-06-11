@@ -1,1 +1,1 @@
-from .note_service import (create_note, get_all_notes, get_note_by_id, update_note, delete_note, get_notes_pagination, search_bytitle)
+from .note_service import (create_note, get_all_notes, get_note_by_id, update_note, delete_note, get_notes_pagination, get_notes_filter)

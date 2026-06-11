@@ -4,6 +4,8 @@ from flask_jwt_extended import create_access_token,create_refresh_token, jwt_req
 from app.services.auth_service import register_user, login_user
 from app.schemas import RegisterSchema,LoginSchema
 from app.exceptions import auth_exception
+from app.logging_config import logger
+from app.utils import success_response, error_response
 
 auth_bp = Blueprint("auth_bp", __name__)
 
@@ -16,10 +18,12 @@ def register():
     
     user = register_user(data)
 
-    return {
-        "message": "User created",
-        "user": user.to_dict()
-    }, 201
+    logger.info(f"New user registered: {user.username} with email: {user.email}")
+
+    return success_response(
+        "User created",
+        user.to_dict()
+    ), 201
 
 
 @auth_bp.route("/login", methods=["POST"])
@@ -29,15 +33,17 @@ def login():
 
     user = login_user(data)
 
-    if not user:
-        raise auth_exception.InvalidCredentialsException()
+    logger.info(f"User logged in: {user.username}")
 
     token = create_access_token(identity=str(user.id))
     refresh_token = create_refresh_token(identity=str(user.id))
-    return {
-        "access_token": token,
-        "refresh_token": refresh_token
-    }, 200
+    return success_response(
+        "Login successful",
+        {
+            "access_token": token,
+            "refresh_token": refresh_token
+        }
+    ), 200
 
 @auth_bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
@@ -49,6 +55,11 @@ def refresh():
         identity=user_id
     )
 
-    return {
-        "access_token": new_access_token
-    }, 200
+    logger.info(f"Token refreshed for user: {user_id}")
+
+    return success_response(
+        "Token refreshed",
+        {
+            "access_token": new_access_token
+        }
+    ), 200

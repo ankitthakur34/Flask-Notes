@@ -1,4 +1,5 @@
 
+from app.exceptions import user_exception
 from app.models.user_model import User
 from app.extensions import db
 from app.repositories import user_repositories
@@ -13,15 +14,13 @@ def get_all_users():
 
 def get_user_notes(user_id):
     user = user_repositories.get_user_by_id(user_id)
-    if user:
-        return user.notes
-    return None
+    
+    
+    return user.notes
 
-def get_user_notes2(user_id):
-
+def get_user_by_id(user_id):
     user = user_repositories.get_user_by_id(user_id)
+    
+    return user
+    
 
-    if not user:
-        return None
-
-    return [note.to_dict() for note in user.notes]
