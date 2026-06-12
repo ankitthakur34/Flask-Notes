@@ -21,9 +21,10 @@ def register():
     logger.info(f"New user registered: {user.username} with email: {user.email}")
 
     return success_response(
-        "User created",
-        user.to_dict()
-    ), 201
+        data=user.to_dict(),
+        message="User registered successfully",
+        status_code=201
+    )
 
 
 @auth_bp.route("/login", methods=["POST"])
@@ -35,15 +36,23 @@ def login():
 
     logger.info(f"User logged in: {user.username}")
 
-    token = create_access_token(identity=str(user.id))
-    refresh_token = create_refresh_token(identity=str(user.id))
+    token = create_access_token(
+        identity=str(user.id),
+        additional_claims={"role": user.role}
+        )
+    refresh_token = create_refresh_token(
+        identity=str(user.id),
+        additional_claims={"role": user.role}
+    )
     return success_response(
-        "Login successful",
-        {
+        data={
             "access_token": token,
             "refresh_token": refresh_token
-        }
-    ), 200
+        },
+        message="Login successful",
+        status_code=200
+    )
+
 
 @auth_bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
@@ -58,8 +67,9 @@ def refresh():
     logger.info(f"Token refreshed for user: {user_id}")
 
     return success_response(
-        "Token refreshed",
-        {
+        data={
             "access_token": new_access_token
-        }
-    ), 200
+        },
+        message="Token refreshed successfully",
+        status_code=200
+    )

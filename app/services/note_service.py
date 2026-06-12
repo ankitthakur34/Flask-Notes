@@ -4,6 +4,8 @@ from app.models.note_model import Note
 from datetime import datetime
 from app.repositories import notes_repositories
 from app.logging_config import logger
+from app.exceptions import note_exception
+from app.cache import get_cached_note, set_cached_note, delete_cached_note
 
 
 def create_note(data):
@@ -82,7 +84,14 @@ def get_notes_pagination(user_id, page, limit):
 
 
 def get_note_by_id(note_id, user_id):
-        return notes_repositories.get_note_by_id(note_id, user_id)
+        get_cached = get_cached_note(user_id, note_id)
+        if get_cached:
+            logger.info(f"Cache hit for note_id: {note_id} and user_id: {user_id}")
+            return get_cached
+        logger.info(f"Cache miss for note_id: {note_id} and user_id: {user_id}")
+        note = notes_repositories.get_note_by_id(note_id, user_id)
+        set_cached_note(user_id, note_id, note.to_dict())
+        return note.to_dict()
 
 def update_note(note_id, data, user_id):
     note = notes_repositories.get_note_by_id(note_id, user_id)
@@ -93,13 +102,29 @@ def update_note(note_id, data, user_id):
     note.priority=data.get('priority',note.priority)    
     note.is_completed=data.get('is_completed',note.is_completed)
     note.due_date=data.get('due_date',note.due_date)
+    note.updated_by = user_id
     db.session.commit()
+    delete_cached_note(user_id, note_id)
     return note
     
 
 def delete_note(note_id, user_id):
     note = notes_repositories.get_note_by_id(note_id, user_id)
    
-    notes_repositories.note_delete(note)
+    notes_repositories.note_delete(note,user_id)
+    delete_cached_note(user_id, note_id)
     return True
+
+def restore_note_service(note_id, user_id):
+    note = notes_repositories.restore_note(note_id, user_id)
+    delete_cached_note(user_id, note_id)
+    
+    
+    return note
+
+def get_trashed_notes_service(user_id):
+    return Note.query.filter_by(
+        user_id=user_id,
+        is_deleted=True
+    ).all()
     

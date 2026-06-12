@@ -11,6 +11,7 @@ class User(db.Model):
     email = db.Column(db.String(100), nullable=False, unique=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     password = db.Column(db.Text, nullable=False)
+    role = db.Column(db.String(20), nullable=False, default="USER")
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -24,5 +25,6 @@ class User(db.Model):
         return {    
             'id': self.id,
             'username': self.username,
-            'email': self.email
+            'email': self.email,
+            'role': self.role
         }

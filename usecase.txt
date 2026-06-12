@@ -26,9 +26,20 @@ addons-
 }
 id=9
 {
-    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc4MTAzMDMzMiwianRpIjoiNzE5YWY0NDYtZTMyOS00YTg5LWJmYTAtOTQ2ZmJjNWI5NGM3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjkiLCJuYmYiOjE3ODEwMzAzMzIsImNzcmYiOiI0MGJhYTFhMy0wN2EwLTQzZTYtYTljZi1mZWExZjQ4NjA4YzQiLCJleHAiOjE3ODE2MzUxMzJ9.htPSxoW34ZOdhyKmufpn-r4QO0MkHToy8Xv5QatKvxM",
-    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc4MTAzMDMzNCwianRpIjoiYWQwMzI3ZGMtMDMzYS00MDBiLWExZDAtZGI5YWEwYmI1NmM1IiwidHlwZSI6InJlZnJlc2giLCJzdWIiOiI5IiwibmJmIjoxNzgxMDMwMzM0LCJjc3JmIjoiMGY5M2MyN2QtMzA5ZC00ZjMyLTlhZmItMzgwNWNiODE5YTZiIiwiZXhwIjoxNzgzNjIyMzM0fQ.l1e4VaXMWem7TXfIW_J5GE--Ky0MsVfXOVfnIHY2UIc"
+    "data": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc4MTE3MzAzMywianRpIjoiNDUzZmIxM2ItNTY0MS00OTZlLTk5YTUtMDViMmIxNDFhYTFjIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjkiLCJuYmYiOjE3ODExNzMwMzMsImNzcmYiOiJmZGMzMDU1Zi1lOTMzLTQ4MjEtYjVlYy0yYTVlZTYwOTJlMDQiLCJleHAiOjE3ODE3Nzc4MzMsInJvbGUiOiJBRE1JTiJ9.Zt5vwFV__uVO2QwIJ57uiT-LmD5hI-Ea1oNA5DzT3G8",
+        "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc4MTE3MzAzMywianRpIjoiYWEwZjVhYTUtOTBkZi00NGJmLTk2MWMtM2I5YzVmMDA5Y2JiIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOiI5IiwibmJmIjoxNzgxMTczMDMzLCJjc3JmIjoiNWU4NDY0ZmItY2MwZC00YTBjLWIwMWQtNzBiNDkyYzQ2MWY0IiwiZXhwIjoxNzgzNzY1MDMzLCJyb2xlIjoiQURNSU4ifQ._pUmHcoO4uVIqgKB6dOUU_AmzoSr_iDcQsZ25IUX0FM"
+    },
+
+{   
+    "email":"ankit626838@test.com",
+    "password":"Password123"
 }
+{
+    "data": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc4MTE3Njc5NCwianRpIjoiNjNkNmY4NGYtOGIwZi00Y2FlLTk4MDMtNDk0MTQ1Y2Y5YzkzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEwIiwibmJmIjoxNzgxMTc2Nzk0LCJjc3JmIjoiY2U1MDJlODgtMDFlOS00NTU2LWI3MTgtNzEzYzk5NzU1NGEwIiwiZXhwIjoxNzgxNzgxNTk0LCJyb2xlIjoiVVNFUiJ9.xGdabyciDxCndkGvSXKcjlitfHjZdBfA0OKse3ONSMs",
+        "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc4MTE3Njc5NCwianRpIjoiMDA0N2VjMGMtY2Q1ZC00NTZiLWJjOTQtZmY4NDE2ZDczMzc3IiwidHlwZSI6InJlZnJlc2giLCJzdWIiOiIxMCIsIm5iZiI6MTc4MTE3Njc5NCwiY3NyZiI6ImZmY2U1MDQxLTQ4OGMtNGFmMy1iNWQyLWYyMjhmMDdkYjc4YyIsImV4cCI6MTc4Mzc2ODc5NCwicm9sZSI6IlVTRVIifQ.ocZs-1_Jeq8mj4TMBAKo8pQ5l6Nfi-tI8w1-ybtzSw8"
+    },    
 
 
 
@@ -40,8 +51,8 @@ level 3
 
 level 4
 1- Role based control - Admin, user, moderator
- - soft delete and all
- 2-audit fields
+ - soft delete and all - D
+ 2-audit fields    -D
  3- DB indexing
  4- caching using Redis
 

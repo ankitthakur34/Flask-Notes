@@ -1,3 +1,4 @@
+
 from marshmallow import Schema, fields,validates, ValidationError
 from flask import jsonify
 from app.exceptions import auth_exception, user_exception, note_exception
@@ -31,6 +32,13 @@ def register_error_handlers(app):
     
     @app.errorhandler(user_exception.UserNotFoundException)
     def handle_user_not_found(error):
+
+        return error_response(
+        error.message,
+        error.status_code
+    )
+    @app.errorhandler(auth_exception.ForbiddenException)
+    def handle_forbidden(error):
 
         return error_response(
         error.message,

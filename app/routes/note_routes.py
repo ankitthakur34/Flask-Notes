@@ -4,9 +4,10 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.schemas import NoteCreateSchema, NoteUpdateSchema
 from app.exceptions import note_exception
-from app.services.note_service import get_notes_filter
+from app.services.note_service import get_notes_filter,restore_note_service,get_trashed_notes_service
 from app.utils import success_response, error_response
 from app.logging_config import logger
+from app.extensions import redis_client
 
 
 note_bp = Blueprint('note_bp', __name__)
@@ -14,6 +15,21 @@ note_bp = Blueprint('note_bp', __name__)
 @note_bp.route('/')
 def home():
     return "Welcome to the Note API"
+
+@note_bp.route("/redis-test")
+@jwt_required()
+def redis_test():
+
+    redis_client.set(
+        "test",
+        "Hello Redis"
+    )
+
+    value = redis_client.get("test")
+
+    return {
+        "value": value
+    }
 
 @note_bp.route('/notes', methods=['POST'])
 @jwt_required()
@@ -31,6 +47,8 @@ def create_note_route():
         "priority": data.get("priority"),
         "is_completed": data.get("is_completed", False),
         "due_date": data.get("due_date"),
+        "created_by": user_id,  # IMPORTANT
+        "updated_by": user_id,  # IMPORTANT
 
         # IMPORTANT
         "user_id": user_id
@@ -102,11 +120,11 @@ def get_notes_pagination_route():
 def get_single_note(note_id):
     user_id = get_jwt_identity()
     note = get_note_by_id(note_id, user_id)
-    logger.info(f"Note retrieved: {note.title} by user: {user_id}")
+    logger.info(f"Note retrieved: {note['title']} by user: {user_id}")
 
     
     return success_response(
-        data=note.to_dict(),
+        data=note,
         message="Note retrieved successfully",
         status_code=200
     )
@@ -140,5 +158,31 @@ def remove_note(note_id):
     return success_response(
         data=None,
         message="Note deleted",
+        status_code=200
+    )
+@note_bp.route("/notes/<int:note_id>/restore", methods=["POST"])
+@jwt_required()
+def restore_note(note_id):
+    user_id = get_jwt_identity()
+    note = restore_note_service(note_id, user_id)
+
+
+    
+
+    return success_response(
+        data=note.to_dict(),
+        message="Note restored successfully",
+        status_code=200
+    )
+
+@note_bp.route("/notes/trash", methods=["GET"])
+@jwt_required()
+def get_trashed_notes():
+    user_id = get_jwt_identity()
+    notes = get_trashed_notes_service(user_id)
+    logger.info(f"Trashed notes retrieved for user: {user_id}")
+    return success_response(
+        data=[note.to_dict() for note in notes],
+        message="Trashed notes retrieved successfully",
         status_code=200
     )

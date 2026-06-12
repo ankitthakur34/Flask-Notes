@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 
+from app.decoraters import role_required
 from app.exceptions import user_exception
 from app.repositories import user_repositories
 from app.services.user_service import (
@@ -19,6 +20,7 @@ user_bp = Blueprint(
 
 
 @user_bp.route("/users", methods=["GET"])
+@role_required("ADMIN")
 def get_users_route():
 
     users = get_all_users()
