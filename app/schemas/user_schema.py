@@ -22,6 +22,7 @@ class RegisterSchema(Schema):
         required=True,
         validate=validate.Length(min=8)
     )
+    
 
     @validates("username")
     def validate_username(self, value, **kwargs):

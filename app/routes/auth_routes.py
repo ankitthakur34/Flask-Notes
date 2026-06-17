@@ -1,11 +1,23 @@
-from flask import Blueprint, request
-from flask_jwt_extended import create_access_token,create_refresh_token, jwt_required, get_jwt_identity
+from flask import Blueprint, request,current_app
+from flask_jwt_extended import create_access_token,create_refresh_token, jwt_required, get_jwt_identity,get_jwt
+import jwt
+from app.extensions import db
 
 from app.services.auth_service import register_user, login_user
 from app.schemas import RegisterSchema,LoginSchema
 from app.exceptions import auth_exception
 from app.logging_config import logger
-from app.utils import success_response, error_response
+from app.repositories.user_repositories import get_user_by_email,get_user_by_id
+from app.utils import success_response, error_response,generate_verification_token,verify_verification_token
+
+import time
+
+
+from app.cache.token_cache import (
+    blacklist_token
+)
+
+
 
 auth_bp = Blueprint("auth_bp", __name__)
 
@@ -26,9 +38,69 @@ def register():
         status_code=201
     )
 
+@auth_bp.route("/verify-email/<token>",methods=["GET"])
+def verify_email(token):
+
+    user_id = verify_verification_token(token)
+
+    if not user_id:
+
+        return error_response(
+            message=
+            "Invalid or expired token",
+            status_code=400
+        )
+
+    user = get_user_by_id(user_id)
+
+    if not user:
+
+        return error_response(
+            message="User not found",
+            status_code=404
+        )
+
+    user.is_verified = True
+
+    db.session.commit()
+
+    return success_response(
+        message=
+        "Email verified successfully"
+    )
+
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
+    """
+    Login
+    ---
+    tags:
+      - Authentication
+
+    parameters:
+      - in: body
+        name: body
+
+        schema:
+          type: object
+
+          required:
+            - email
+            - password
+
+          properties:
+
+            email:
+              type: string
+
+            password:
+              type: string
+
+    responses:
+      200:
+        description: Login successful
+    """
 
     data = LoginSchema().load(request.get_json())
 
@@ -73,3 +145,48 @@ def refresh():
         message="Token refreshed successfully",
         status_code=200
     )
+
+@auth_bp.route('/logout',methods=['POST'])
+@jwt_required()
+def logout():
+    token = get_jwt()
+
+    jti = token["jti"]
+    logger.info(
+    f"Token blacklisted: {jti}"
+)
+
+    expires_in = (
+        token["exp"]
+        - int(time.time())
+    )
+
+    blacklist_token(
+        jti,
+        expires_in
+    )
+    data = request.get_json()
+    refresh_token = data.get('refresh_token')
+    logger.info(f"Refresh Token : {refresh_token} ")
+    if refresh_token:
+        refresh_payload = jwt.decode(
+            refresh_token,
+            current_app.config[
+                "JWT_SECRET_KEY"
+            ],
+            algorithms=["HS256"]
+        )
+        refresh_jti = refresh_payload["jti"]
+
+        refresh_exp = (
+            refresh_payload["exp"]
+            - int(time.time())
+        )
+        blacklist_token(
+            refresh_jti,
+            refresh_exp
+        )
+    return success_response(
+        message="Logout Scuccesfully"
+    )
+    

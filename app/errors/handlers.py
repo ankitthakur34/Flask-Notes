@@ -3,6 +3,8 @@ from marshmallow import Schema, fields,validates, ValidationError
 from flask import jsonify
 from app.exceptions import auth_exception, user_exception, note_exception
 from app.utils import success_response, error_response
+from app.exceptions.rateLimit_exception import RateLimitException
+from app.logging_config import logger
 
 def register_error_handlers(app):
 
@@ -44,4 +46,18 @@ def register_error_handlers(app):
         error.message,
         error.status_code
     )
+    @app.errorhandler(RateLimitException)
+    def handle_rate_limit(error):
+
+        return error_response(
+        error.message,
+        error.status_code
+    )
+    @app.errorhandler(auth_exception.EmailNotVerified)
+    def handle_usernotverified(error):
+        return error_response(
+        error.message,
+        error.status_code
+    )
+
     

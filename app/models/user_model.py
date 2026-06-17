@@ -12,6 +12,7 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     password = db.Column(db.Text, nullable=False)
     role = db.Column(db.String(20), nullable=False, default="USER")
+    is_verified = db.Column(db.Boolean,nullable=False,default=False)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -28,3 +29,39 @@ class User(db.Model):
             'email': self.email,
             'role': self.role
         }
+
+#  DTO - Data transfor object - when we want diffrenet represenation of a single model. 
+
+# Where DTO Becomes Useful
+
+# Suppose tomorrow you need:
+
+# Admin API
+# {
+#   "id": 1,
+#   "username": "ankit",
+#   "email": "ankit@gmail.com",
+#   "role": "ADMIN",
+#   "created_at": "..."
+# }
+# Public API
+# {
+#   "id": 1,
+#   "username": "ankit"
+# }
+# Profile API
+# {
+#   "id": 1,
+#   "username": "ankit",
+#   "email": "ankit@gmail.com"
+# }
+
+# Now one to_dict() cannot satisfy all three use cases.
+
+# DTOs solve that:
+
+# AdminUserDTO.to_response(user)
+
+# PublicUserDTO.to_response(user)
+
+# ProfileUserDTO.to_response(user)

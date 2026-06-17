@@ -8,9 +8,10 @@ from app.services.note_service import get_notes_filter,restore_note_service,get_
 from app.utils import success_response, error_response
 from app.logging_config import logger
 from app.extensions import redis_client
-
+from app.decoraters import rate_limit
 
 note_bp = Blueprint('note_bp', __name__)
+
 
 @note_bp.route('/')
 def home():
@@ -34,6 +35,51 @@ def redis_test():
 @note_bp.route('/notes', methods=['POST'])
 @jwt_required()
 def create_note_route():
+    """
+    Create Note
+    ---
+    tags:
+      - Notes
+
+    security:
+      - Bearer: []
+
+    parameters:
+      - in: body
+        name: body
+
+        schema:
+          type: object
+
+          required:
+            - title
+            - content
+
+          properties:
+
+            title:
+              type: string
+
+            content:
+              type: string
+
+            category:
+              type: string
+
+            priority:
+              type: string
+
+            due_date:
+              type: string
+              format: date-time
+
+    responses:
+      201:
+        description: Note created
+
+      400:
+        description: Validation error
+    """
     user_id = get_jwt_identity()
     
     data = NoteCreateSchema().load(
@@ -72,8 +118,36 @@ def create_note_route():
 #         'notes': [note.to_dict() for note in notes]
 #     }
 @note_bp.route('/notes', methods=['GET'])
+@rate_limit(5,60)
 @jwt_required()
 def get_notes_pagination_route():
+    """
+    Get All Notes
+    ---
+    tags:
+      - Notes
+
+    security:
+      - Bearer: []
+
+    parameters:
+      - name: page
+        in: query
+        type: integer
+        required: false
+
+      - name: limit
+        in: query
+        type: integer
+        required: false
+
+    responses:
+      200:
+        description: List of notes
+
+      401:
+        description: Unauthorized
+    """
     user_id = get_jwt_identity()
 
     page=request.args.get('page',default=1,type=int)
@@ -116,6 +190,7 @@ def get_notes_pagination_route():
 
 # Get Single Note
 @note_bp.route("/notes/<int:note_id>", methods=["GET"])
+@rate_limit(3,60)
 @jwt_required()
 def get_single_note(note_id):
     user_id = get_jwt_identity()
