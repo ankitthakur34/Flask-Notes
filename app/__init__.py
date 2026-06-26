@@ -7,6 +7,7 @@ from app.errors import register_error_handlers
 from app.utils.request_logger import log_request, log_response
 from app.swagger import swagger_config, swagger_template
 from app.cache.token_cache import is_token_blacklisted
+from app.backgroundJobs import make_celery
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -23,6 +24,10 @@ def create_app():
     Swagger(app, config=swagger_config, template=swagger_template)
     
     mail.init_app(app)
+    celery = make_celery(app)
+
+    app.celery = celery
+    
 
 
     @jwt.token_in_blocklist_loader

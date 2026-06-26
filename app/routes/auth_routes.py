@@ -3,12 +3,14 @@ from flask_jwt_extended import create_access_token,create_refresh_token, jwt_req
 import jwt
 from app.extensions import db
 
-from app.services.auth_service import register_user, login_user
+from app.services.auth_service import register_user, login_user,forgot_password,reset_password
 from app.schemas import RegisterSchema,LoginSchema
 from app.exceptions import auth_exception
 from app.logging_config import logger
 from app.repositories.user_repositories import get_user_by_email,get_user_by_id
 from app.utils import success_response, error_response,generate_verification_token,verify_verification_token
+
+from app.tasks import send_email_task
 
 import time
 
@@ -189,4 +191,57 @@ def logout():
     return success_response(
         message="Logout Scuccesfully"
     )
+
+@auth_bp.route("/forgot-password",methods=["POST"])
+def forgot_password_route():
+
+    data = request.get_json()
+
+    result = forgot_password(
+        data["email"]
+    )
+
+    return success_response(
+        message=result["message"]
+    )
+
+@auth_bp.route("/reset-password/<token>",methods=["POST"])
+def reset_password_route( token):
+
+    data = request.get_json()
+
+    user = reset_password(
+        token,
+        data["password"]
+    )
+
+    if not user:
+
+        return error_response(
+            message=
+            "Invalid or expired token",
+            status_code=400
+        )
+
+    return success_response(
+        message=
+        "Password reset successfully"
+    )
+
+@auth_bp.route(
+    "/test-task",
+    methods=["GET"]
+)
+def test_task():
+
+    send_email_task.delay(
+        "ankit@gmail.com",
+        "Test Subject",
+        "Hello From Celery"
+    )
+
+    return {
+        "message":
+        "Task Queued Successfully"
+    }, 200
     
