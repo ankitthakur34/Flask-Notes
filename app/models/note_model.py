@@ -21,6 +21,13 @@ class Note(db.Model):
     updated_by = db.Column(db.Integer, nullable=True)
     deleted_by = db.Column(db.Integer, nullable=True)
 
+    attachments = db.relationship(
+    "Attachment",
+    backref="note",
+    lazy=True,
+    cascade="all, delete-orphan"
+)
+
 
     def to_dict(self):
         return {

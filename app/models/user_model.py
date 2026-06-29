@@ -2,6 +2,7 @@
 from app.extensions import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import url_for
 
 class User(db.Model):
     __tablename__ = "users"
@@ -13,6 +14,7 @@ class User(db.Model):
     password = db.Column(db.Text, nullable=False)
     role = db.Column(db.String(20), nullable=False, default="USER")
     is_verified = db.Column(db.Boolean,nullable=False,default=False)
+    profile_image = db.Column(db.String(255),nullable=True)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -27,7 +29,16 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'role': self.role
+            'role': self.role,
+            "profile_image": (
+            url_for(
+                "user_bp.get_profile_image",
+                filename=self.profile_image,
+                _external=True
+            )
+            if self.profile_image
+            else None
+        )
         }
 
 #  DTO - Data transfor object - when we want diffrenet represenation of a single model. 

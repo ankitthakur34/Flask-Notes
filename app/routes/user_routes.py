@@ -8,8 +8,14 @@ from app.services.user_service import (
     get_user_notes,
     get_user_by_id
 )
-from app.exceptions import user_exception
+from app.exceptions import user_exception,BadRequestException
 from app.logging_config import logger
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.utils import success_response, error_response
+from app.services.user_service import upload_profile_image
+from app.models.user_model import User
+from flask import send_from_directory, current_app
+
 
 
 user_bp = Blueprint(
@@ -50,3 +56,38 @@ def get_user_notes_route(user_id):
     return {
         'notes': [note.to_dict() for note in notes]
     },200
+
+@user_bp.route("/upload-profile_image",methods=["POST"])
+@jwt_required()
+def upload_image():
+
+    user_id =get_jwt_identity()
+    
+
+    if "image" not in request.files:
+
+        return error_response(
+            "Image is required"
+        )
+
+    image = request.files["image"]
+
+    user= upload_profile_image(
+        user_id,
+        image
+    )
+
+    return success_response(
+        data=user.to_dict(),
+        message="Profile image uploaded"
+    )
+
+@user_bp.route("/profile-image/<filename>",methods=["GET"]
+)
+def get_profile_image(filename):
+
+    return send_from_directory(
+        current_app.config["PROFILE_UPLOAD_FOLDER"],
+        filename
+    )
+
