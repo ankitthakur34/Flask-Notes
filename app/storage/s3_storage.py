@@ -208,3 +208,181 @@ class S3StorageService(
         "filename": generated_filename,
         "key": key
     }
+
+    def initiate_multipart_upload(
+    self,
+    filename,
+    folder,
+    content_type
+):
+
+        extension = os.path.splitext(
+        filename
+    )[1]
+
+        generated_filename = (
+        f"{uuid.uuid4()}"
+        f"{extension}"
+    )
+
+        key = (
+        f"{folder}/"
+        f"{generated_filename}"
+    )
+
+        response = (
+        self.client.create_multipart_upload(
+            Bucket=self.bucket,
+            Key=key,
+            ContentType=content_type
+        )
+    )
+
+        return {
+        "upload_id":
+            response["UploadId"],
+
+        "filename":
+            generated_filename,
+
+        "key":
+            key
+    }
+
+
+    def get_part_upload_url(
+    self,
+    filename,
+    folder,
+    upload_id,
+    part_number
+):
+
+        key = (
+        f"{folder}/"
+        f"{filename}"
+    )
+
+        url = (
+        self.client.generate_presigned_url(
+            ClientMethod="upload_part",
+            Params={
+                "Bucket":
+                    self.bucket,
+
+                "Key":
+                    key,
+
+                "UploadId":
+                    upload_id,
+
+                "PartNumber":
+                    part_number
+            },
+            ExpiresIn=3600
+        )
+    )
+
+        return {
+        "upload_url": url,
+        "part_number": part_number
+    }
+
+
+    def complete_multipart_upload(
+    self,
+    filename,
+    folder,
+    upload_id,
+    parts
+):
+
+        key = (
+        f"{folder}/"
+        f"{filename}"
+    )
+
+        response = (
+        self.client.complete_multipart_upload(
+            Bucket=self.bucket,
+            Key=key,
+            UploadId=upload_id,
+            MultipartUpload={
+                "Parts": parts
+            }
+        )
+    )
+
+        return {
+        "location":
+            response.get("Location"),
+
+        "key":
+            response.get("Key"),
+
+        "etag":
+            response.get("ETag")
+    }
+
+
+    def abort_multipart_upload(
+    self,
+    filename,
+    folder,
+    upload_id
+):
+
+        key = (
+        f"{folder}/"
+        f"{filename}"
+    )
+
+        self.client.abort_multipart_upload(
+        Bucket=self.bucket,
+        Key=key,
+        UploadId=upload_id
+    )
+
+        return True
+    
+    def list_uploaded_parts(
+    self,
+    filename,
+    folder,
+    upload_id
+):
+
+        key = (
+        f"{folder}/"
+        f"{filename}"
+    )
+
+        response = (
+        self.client.list_parts(
+            Bucket=self.bucket,
+            Key=key,
+            UploadId=upload_id
+        )
+    )
+
+        parts = []
+
+        for part in response.get(
+        "Parts",
+        []
+    ):
+
+            parts.append(
+            {
+                "part_number":
+                    part["PartNumber"],
+
+                "etag":
+                    part["ETag"],
+
+                "size":
+                    part["Size"]
+            }
+        )
+
+        return parts

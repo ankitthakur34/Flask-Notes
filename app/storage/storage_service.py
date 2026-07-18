@@ -54,3 +54,53 @@ class StorageService(ABC):
     expiry=300
 ):
         pass
+
+    @abstractmethod
+    def initiate_multipart_upload(
+    self,
+    filename,
+    folder,
+    content_type
+):
+        pass
+
+
+    @abstractmethod
+    def get_part_upload_url(
+    self,
+    filename,
+    folder,
+    upload_id,
+    part_number
+):
+        pass
+
+
+    @abstractmethod
+    def complete_multipart_upload(
+    self,
+    filename,
+    folder,
+    upload_id,
+    parts
+):
+        pass
+
+
+    @abstractmethod
+    def abort_multipart_upload(
+    self,
+    filename,
+    folder,
+    upload_id
+):
+        pass
+
+    @abstractmethod
+    def list_uploaded_parts(
+    self,
+    filename,
+    folder,
+    upload_id
+):
+        pass

@@ -80,3 +80,55 @@ class LocalStorageService(StorageService):
     expiry=300
 ):
         return None
+    
+    def initiate_multipart_upload(
+        self,
+        filename,
+        folder,
+        content_type
+    ):
+        raise NotImplementedError(
+            "Multipart uploads are only supported for S3."
+        )
+
+    def get_part_upload_url(
+        self,
+        filename,
+        folder,
+        upload_id,
+        part_number
+    ):
+        raise NotImplementedError(
+            "Multipart uploads are only supported for S3."
+        )
+
+    def complete_multipart_upload(
+        self,
+        filename,
+        folder,
+        upload_id,
+        parts
+    ):
+        raise NotImplementedError(
+            "Multipart uploads are only supported for S3."
+        )
+
+    def abort_multipart_upload(
+        self,
+        filename,
+        folder,
+        upload_id
+    ):
+        raise NotImplementedError(
+            "Multipart uploads are only supported for S3."
+        )
+    
+    def list_uploaded_parts(
+    self,
+    filename,
+    folder,
+    upload_id
+):
+        raise NotImplementedError(
+        "Multipart uploads only supported for S3."
+    )

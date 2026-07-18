@@ -348,3 +348,159 @@ def complete_presigned_upload(
     db.session.commit()
 
     return attachment
+
+
+def initiate_multipart_upload(
+    note_id,
+    user_id,
+    filename,
+    content_type
+):
+
+    note = Note.query.filter_by(
+        id=note_id,
+        user_id=user_id
+    ).first()
+
+    if not note:
+        raise note_exception.NoteNotFoundException(
+            "Note not found."
+        )
+
+    storage = get_storage()
+
+    if current_app.config[
+        "UPLOAD_PROVIDER"
+    ] != "S3":
+        raise BadRequestException(
+            "Multipart upload only supported for S3."
+        )
+
+    return (
+        storage.initiate_multipart_upload(
+            filename=filename,
+            folder=get_attachment_folder(),
+            content_type=content_type
+        )
+    )
+
+def get_multipart_part_url(
+    user_id,
+    attachment_filename,
+    upload_id,
+    part_number
+):
+
+    storage = get_storage()
+
+    if current_app.config[
+        "UPLOAD_PROVIDER"
+    ] != "S3":
+
+        raise BadRequestException(
+            "Multipart upload only supported for S3."
+        )
+
+    return (
+        storage.get_part_upload_url(
+            filename=attachment_filename,
+            folder=get_attachment_folder(),
+            upload_id=upload_id,
+            part_number=part_number
+        )
+    )
+
+def complete_multipart_attachment(
+    note_id,
+    user_id,
+    filename,
+    upload_id,
+    parts,
+    original_filename,
+    content_type,
+    file_size
+):
+
+    note = Note.query.filter_by(
+        id=note_id,
+        user_id=user_id
+    ).first()
+
+    if not note:
+        raise note_exception.NoteNotFoundException(
+            "Note not found."
+        )
+
+    storage = get_storage()
+
+    response = (
+        storage.complete_multipart_upload(
+            filename=filename,
+            folder=get_attachment_folder(),
+            upload_id=upload_id,
+            parts=parts
+        )
+    )
+
+    attachment = Attachment(
+        filename=filename,
+        original_filename=original_filename,
+        file_path=filename,
+        mime_type=content_type,
+        file_size=file_size,
+        note_id=note.id,
+        checksum=""
+    )
+
+    db.session.add(
+        attachment
+    )
+
+    db.session.commit()
+
+    return attachment
+
+def abort_multipart_attachment(
+    user_id,
+    filename,
+    upload_id
+):
+
+    storage = get_storage()
+
+    if current_app.config[
+        "UPLOAD_PROVIDER"
+    ] != "S3":
+        raise BadRequestException(
+            "Multipart uploads only supported for S3."
+        )
+
+    storage.abort_multipart_upload(
+        filename=filename,
+        folder=get_attachment_folder(),
+        upload_id=upload_id
+    )
+
+    return True
+
+def get_uploaded_parts(
+    filename,
+    upload_id
+):
+
+    storage = get_storage()
+
+    if current_app.config[
+        "UPLOAD_PROVIDER"
+    ] != "S3":
+        raise BadRequestException(
+            "Multipart uploads only supported for S3."
+        )
+
+    return (
+        storage.list_uploaded_parts(
+            filename=filename,
+            folder=get_attachment_folder(),
+            upload_id=upload_id
+        )
+    )

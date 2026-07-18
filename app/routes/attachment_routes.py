@@ -12,7 +12,7 @@ from flask import (
 from app.dto import AttachmentDTO
 from app.exceptions import note_exception
 from app.storage import get_storage
-from app.services.attachment_service import upload_attachments,get_note_attachments,get_attachment,delete_attachment,replace_attachment,complete_presigned_upload
+from app.services.attachment_service import get_uploaded_parts, abort_multipart_attachment,complete_multipart_attachment,get_multipart_part_url,upload_attachments,get_note_attachments,get_attachment,delete_attachment,replace_attachment,complete_presigned_upload,initiate_multipart_upload
 from app.services.note_service import get_note_by_id
 from app.utils.api_respone import success_response
 from app.storage.factory import (
@@ -235,4 +235,164 @@ def replace_attachment_route(
     attachment
 ),
         message="Attachment replaced successfully"
+    )
+
+
+@attachment_bp.route(
+    "/multipart/initiate",
+    methods=["POST"]
+)
+@jwt_required()
+def initiate_multipart_route():
+
+    data = request.get_json()
+
+    note_id = data.get(
+        "note_id"
+    )
+
+    filename = data.get(
+        "filename"
+    )
+
+    content_type = data.get(
+        "content_type"
+    )
+
+    response = (
+        initiate_multipart_upload(
+            note_id,
+            get_jwt_identity(),
+            filename,
+            content_type
+        )
+    )
+
+    return success_response(
+        data=response,
+        message=(
+            "Multipart upload initiated"
+        )
+    )
+
+@attachment_bp.route(
+    "/multipart/part-url",
+    methods=["POST"]
+)
+@jwt_required()
+def multipart_part_url():
+
+    data = request.get_json()
+
+    filename = data.get(
+        "filename"
+    )
+
+    upload_id = data.get(
+        "upload_id"
+    )
+
+    part_number = data.get(
+        "part_number"
+    )
+
+    response = (
+        get_multipart_part_url(
+            get_jwt_identity(),
+            filename,
+            upload_id,
+            part_number
+        )
+    )
+
+    return success_response(
+        data=response,
+        message=(
+            "Part upload URL generated."
+        )
+    )
+
+
+@attachment_bp.route(
+    "/multipart/complete",
+    methods=["POST"]
+)
+@jwt_required()
+def complete_multipart_route():
+
+    data = request.get_json()
+
+    attachment = (
+        complete_multipart_attachment(
+            note_id=data["note_id"],
+            user_id=get_jwt_identity(),
+            filename=data["filename"],
+            upload_id=data["upload_id"],
+            parts=data["parts"],
+            original_filename=data[
+                "original_filename"
+            ],
+            content_type=data[
+                "content_type"
+            ],
+            file_size=data[
+                "file_size"
+            ]
+        )
+    )
+
+    return success_response(
+        data=AttachmentDTO.to_response(
+            attachment
+        ),
+        message=(
+            "Multipart upload completed."
+        )
+    )
+
+@attachment_bp.route(
+    "/multipart/abort",
+    methods=["DELETE"]
+)
+@jwt_required()
+def abort_multipart_route():
+
+    data = request.get_json()
+
+    abort_multipart_attachment(
+        user_id=get_jwt_identity(),
+        filename=data["filename"],
+        upload_id=data["upload_id"]
+    )
+
+    return success_response(
+        data=[],
+        message="Multipart upload aborted."
+    )
+
+@attachment_bp.route(
+    "/multipart/parts",
+    methods=["POST"]
+)
+@jwt_required()
+def uploaded_parts_route():
+
+    data = request.get_json()
+
+    parts = (
+        get_uploaded_parts(
+            filename=data[
+                "filename"
+            ],
+            upload_id=data[
+                "upload_id"
+            ]
+        )
+    )
+
+    return success_response(
+        data=parts,
+        message=(
+            "Uploaded parts fetched."
+        )
     )
