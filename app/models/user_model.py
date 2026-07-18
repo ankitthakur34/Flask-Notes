@@ -4,6 +4,8 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import url_for
 
+from app.storage.factory import get_profile_folder, get_storage
+
 class User(db.Model):
     __tablename__ = "users"
 
@@ -25,20 +27,35 @@ class User(db.Model):
     notes = db.relationship('Note', backref='user', lazy=True,cascade="all, delete")
 
     def to_dict(self):
+        profile_url = None
+
+        if self.profile_image:
+
+            storage = get_storage()
+
+            filename = (
+            self.profile_image
+            .replace(
+                "profile/",
+                ""
+            )
+        )
+
+            profile_url = (
+            storage.get_download_url(
+                folder=
+                get_profile_folder(),
+
+                filename=filename
+            )
+        )
         return {    
             'id': self.id,
             'username': self.username,
             'email': self.email,
             'role': self.role,
-            "profile_image": (
-            url_for(
-                "user_bp.get_profile_image",
-                filename=self.profile_image,
-                _external=True
-            )
-            if self.profile_image
-            else None
-        )
+            "profile_image":
+            profile_url
         }
 
 #  DTO - Data transfor object - when we want diffrenet represenation of a single model. 

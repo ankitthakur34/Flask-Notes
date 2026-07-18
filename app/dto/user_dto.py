@@ -1,6 +1,7 @@
 class UserDTO:
     @staticmethod
     def to_response(user):
+        
         return {
             "id": user.id,
             "username": user.username,

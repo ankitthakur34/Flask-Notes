@@ -2,3 +2,4 @@ from .note_service import (create_note, get_all_notes, get_note_by_id, update_no
 from . import auth_service
 from . import user_service
 from . import attachment_service
+from . import profile_image_service
