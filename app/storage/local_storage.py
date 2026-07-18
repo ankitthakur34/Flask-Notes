@@ -123,12 +123,10 @@ class LocalStorageService(StorageService):
             "Multipart uploads are only supported for S3."
         )
     
-    def list_uploaded_parts(
+    def list_parts(
     self,
+    upload_id,
     filename,
-    folder,
-    upload_id
+    folder
 ):
-        raise NotImplementedError(
-        "Multipart uploads only supported for S3."
-    )
+        return []

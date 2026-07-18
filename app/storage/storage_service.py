@@ -97,7 +97,7 @@ class StorageService(ABC):
         pass
 
     @abstractmethod
-    def list_uploaded_parts(
+    def list_parts(
     self,
     filename,
     folder,

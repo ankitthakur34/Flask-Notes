@@ -12,9 +12,10 @@ from flask import (
 from app.dto import AttachmentDTO
 from app.exceptions import note_exception
 from app.storage import get_storage
-from app.services.attachment_service import get_uploaded_parts, abort_multipart_attachment,complete_multipart_attachment,get_multipart_part_url,upload_attachments,get_note_attachments,get_attachment,delete_attachment,replace_attachment,complete_presigned_upload,initiate_multipart_upload
+from app.services.attachment_service import list_uploaded_parts,get_in_progress_uploads,mark_part_uploaded,get_uploaded_parts, abort_multipart_attachment,complete_multipart_attachment,get_multipart_part_url,upload_attachments,get_note_attachments,get_attachment,delete_attachment,replace_attachment,complete_presigned_upload,initiate_multipart_upload
 from app.services.note_service import get_note_by_id
 from app.utils.api_respone import success_response
+from app.dto.attachment_dto import AttachmentDTO
 from app.storage.factory import (
     get_attachment_folder
 )
@@ -258,13 +259,15 @@ def initiate_multipart_route():
     content_type = data.get(
         "content_type"
     )
+    total_parts= data.get("total_parts")
 
     response = (
         initiate_multipart_upload(
             note_id,
             get_jwt_identity(),
             filename,
-            content_type
+            content_type,
+            total_parts
         )
     )
 
@@ -395,4 +398,70 @@ def uploaded_parts_route():
         message=(
             "Uploaded parts fetched."
         )
+    )
+
+
+@attachment_bp.route(
+    "/multipart/part-success",
+    methods=["POST"]
+)
+@jwt_required()
+def multipart_part_uploaded():
+
+    data = request.get_json()
+
+    upload = mark_part_uploaded(
+        upload_id=data["upload_id"],
+        part_number=data["part_number"]
+    )
+
+    return success_response(
+        data={
+            "uploaded_parts":
+            upload.uploaded_part_numbers
+        },
+        message="Part marked uploaded."
+    )
+
+@attachment_bp.route(
+    "/multipart/in-progress",
+    methods=["GET"]
+)
+@jwt_required()
+def get_uploads():
+
+    uploads = (
+        get_in_progress_uploads(
+            get_jwt_identity()
+        )
+    )
+
+    return success_response(
+        data=[
+            AttachmentDTO.multipart_to_response(
+                u
+            )
+            for u in uploads
+        ]
+    )
+
+@attachment_bp.route(
+    "/multipart/list-parts",
+    methods=["POST"]
+)
+@jwt_required()
+def multipart_list_parts():
+
+    data = request.get_json()
+
+    parts = (
+        list_uploaded_parts(
+            upload_id=data["upload_id"],
+            filename=data["filename"]
+        )
+    )
+
+    return success_response(
+        data=parts,
+        message="Parts fetched successfully."
     )

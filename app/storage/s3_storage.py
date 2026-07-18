@@ -345,11 +345,11 @@ class S3StorageService(
 
         return True
     
-    def list_uploaded_parts(
+    def list_parts(
     self,
+    upload_id,
     filename,
-    folder,
-    upload_id
+    folder
 ):
 
         key = (
@@ -365,24 +365,7 @@ class S3StorageService(
         )
     )
 
-        parts = []
-
-        for part in response.get(
+        return response.get(
         "Parts",
         []
-    ):
-
-            parts.append(
-            {
-                "part_number":
-                    part["PartNumber"],
-
-                "etag":
-                    part["ETag"],
-
-                "size":
-                    part["Size"]
-            }
-        )
-
-        return parts
+    )

@@ -50,7 +50,7 @@ class Attachment(db.Model):
 
     checksum = db.Column(
     db.String(64),
-    nullable=False
+    nullable=True
 )
 
     def to_dict(self):

@@ -7,6 +7,7 @@ from app.exceptions import (
     note_exception,
     BadRequestException
 )
+from app.models.multipart_upload_model import MultipartUpload
 from app.storage import get_storage
 from app.utils.file_util import (
     delete_file,
@@ -354,7 +355,8 @@ def initiate_multipart_upload(
     note_id,
     user_id,
     filename,
-    content_type
+    content_type,
+    total_parts
 ):
 
     note = Note.query.filter_by(
@@ -376,13 +378,29 @@ def initiate_multipart_upload(
             "Multipart upload only supported for S3."
         )
 
-    return (
-        storage.initiate_multipart_upload(
+    response = storage.initiate_multipart_upload(
             filename=filename,
             folder=get_attachment_folder(),
             content_type=content_type
         )
-    )
+    
+
+    upload = MultipartUpload(
+    upload_id=response["upload_id"],
+    filename=response["filename"],
+    original_filename=filename,
+    note_id=note_id,
+    user_id=user_id,
+    total_parts=total_parts,
+    uploaded_part_numbers=[],
+    
+    status="INITIATED"
+)
+    db.session.add(upload)
+    db.session.commit()
+    response["db_upload_id"] = upload.id
+
+    return response
 
 def get_multipart_part_url(
     user_id,
@@ -441,6 +459,13 @@ def complete_multipart_attachment(
             parts=parts
         )
     )
+    upload = MultipartUpload.query.filter_by(
+    upload_id=upload_id
+).first()
+
+    upload.status = "COMPLETED"
+
+    db.session.commit()
 
     attachment = Attachment(
         filename=filename,
@@ -480,6 +505,12 @@ def abort_multipart_attachment(
         folder=get_attachment_folder(),
         upload_id=upload_id
     )
+    upload = MultipartUpload.query.filter_by(
+    upload_id=upload_id
+).first()
+    upload.status = "ABORTED"
+
+    db.session.commit()
 
     return True
 
@@ -503,4 +534,80 @@ def get_uploaded_parts(
             folder=get_attachment_folder(),
             upload_id=upload_id
         )
+    )
+
+def mark_part_uploaded(
+    upload_id,
+    part_number
+):
+
+    upload = MultipartUpload.query.filter_by(
+        upload_id=upload_id
+    ).first()
+
+    if not upload:
+        raise BadRequestException(
+            "Upload not found."
+        )
+
+    current_parts = (
+        upload.uploaded_part_numbers
+        or []
+    )
+
+    if part_number not in current_parts:
+
+        updated_parts = sorted(
+            current_parts + [part_number]
+        )
+
+        upload.uploaded_part_numbers = (
+            updated_parts
+        )
+        print(
+    "Before:",
+    current_parts
+)
+
+    print(
+    "Saving:",
+    updated_parts
+)
+
+    upload.status = "UPLOADING"
+
+    db.session.commit()
+    print(
+    "DB:",
+    upload.uploaded_part_numbers
+)
+
+    db.session.refresh(upload)
+
+    return upload
+
+def get_in_progress_uploads(
+    user_id
+):  
+    return MultipartUpload.query.filter(
+    MultipartUpload.user_id == user_id,
+    MultipartUpload.status.in_(
+        [
+            "INITIATED",
+            "UPLOADING"
+        ]
+    )
+).all()
+
+def list_uploaded_parts(
+    upload_id,
+    filename
+):
+
+    storage = get_storage()
+
+    return storage.list_parts(
+        upload_id=upload_id,
+        filename=filename,
+        folder=get_attachment_folder()
     )
