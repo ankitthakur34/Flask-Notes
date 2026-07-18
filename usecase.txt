@@ -85,4 +85,4 @@ level 8 system design
 
 
 
-q1- when we create mutipart and pass key and bucketname , the bucket will be aware of this transcation na?
+q1- sswhen we create mutipart and pass key and bucketname , the bucket will be aware of this transcation na?
