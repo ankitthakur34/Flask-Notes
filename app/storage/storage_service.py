@@ -35,3 +35,22 @@ class StorageService(ABC):
         filename
     ):
         pass
+    @abstractmethod
+
+    def get_download_url(
+    self,
+    folder,
+    filename,
+    expiry=300
+):
+        pass
+
+    @abstractmethod
+    def get_upload_url(
+    self,
+    filename,
+    folder,
+    content_type,
+    expiry=300
+):
+        pass

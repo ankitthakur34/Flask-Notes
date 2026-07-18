@@ -63,3 +63,20 @@ class LocalStorageService(StorageService):
                 filename
             )
         )
+    def get_download_url(
+    self,
+    folder,
+    filename,
+    expiry=300
+):
+
+        return None
+    
+    def get_upload_url(
+    self,
+    filename,
+    folder,
+    content_type,
+    expiry=300
+):
+        return None

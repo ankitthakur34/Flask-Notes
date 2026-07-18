@@ -10,9 +10,14 @@ from flask import (
     send_from_directory
 )
 from app.dto import AttachmentDTO
+from app.exceptions import note_exception
 from app.storage import get_storage
-from app.services.attachment_service import upload_attachments,get_note_attachments,get_attachment,delete_attachment,replace_attachment
+from app.services.attachment_service import upload_attachments,get_note_attachments,get_attachment,delete_attachment,replace_attachment,complete_presigned_upload
+from app.services.note_service import get_note_by_id
 from app.utils.api_respone import success_response
+from app.storage.factory import (
+    get_attachment_folder
+)
 
 attachment_bp = Blueprint(
     "attachments",
@@ -38,6 +43,92 @@ def upload_note_attachments(note_id):
 ),
         message="Attachments uploaded successfully",
         status_code=201
+    )
+
+@attachment_bp.route(
+    "/upload-url",
+    methods=["POST"]
+)
+@jwt_required()
+def generate_upload_url():
+
+    data = request.get_json()
+
+    note_id = data.get(
+        "note_id"
+    )
+
+    filename = data.get(
+        "filename"
+    )
+
+    content_type = data.get(
+        "content_type"
+    )
+
+    note = get_note_by_id(note_id,get_jwt_identity())
+
+    if not note:
+        raise note_exception.NoteNotFoundException(
+            "Note not found."
+        )
+
+    storage = get_storage()
+
+    response = (
+        storage.get_upload_url(
+            filename=filename,
+            folder=get_attachment_folder(),
+            content_type=content_type
+        )
+    )
+
+    response["note_id"] = note_id
+
+    return success_response(
+        data=response,
+        message="Upload URL generated"
+    )
+
+
+@attachment_bp.route(
+    "/complete-upload",
+    methods=["POST"]
+)
+@jwt_required()
+def complete_upload():
+
+    data = request.get_json()
+
+    attachment = (
+        complete_presigned_upload(
+            note_id=data[
+                "note_id"
+            ],
+            user_id=
+            get_jwt_identity(),
+            filename=data[
+                "filename"
+            ],
+            original_filename=data[
+                "original_filename"
+            ],
+            mime_type=data[
+                "mime_type"
+            ],
+            file_size=data[
+                "file_size"
+            ]
+        )
+    )
+
+    return success_response(
+        data=
+        AttachmentDTO.to_response(
+            attachment
+        ),
+        message=
+        "Attachment saved."
     )
 
 
@@ -73,14 +164,33 @@ def download_attachment(
         attachment_id,
         get_jwt_identity()
     )
-    storage=get_storage()
 
+    storage = get_storage()
+
+    if current_app.config[
+        "UPLOAD_PROVIDER"
+    ] == "S3":
+
+        url = storage.get_download_url(
+            get_attachment_folder(),
+            attachment.filename,
+            expiry=300
+        )
+
+        return success_response(
+            data={
+                "download_url": url,
+                "expires_in": 300
+            },
+            message=(
+                "Presigned URL generated"
+            )
+        )
+    print("defualt download method")
     return storage.download(
-        current_app.config[
-            "ATTACHMENT_UPLOAD_FOLDER"
-        ],
+        get_attachment_folder(),
         attachment.filename,
-       attachment.original_filename
+        attachment.original_filename
     )
 
 @attachment_bp.route(

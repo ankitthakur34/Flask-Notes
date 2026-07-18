@@ -13,6 +13,9 @@ from app.utils.file_util import (
    calculate_checksum,
     validate_uploaded_file
 )
+from app.storage.factory import (
+    get_attachment_folder
+)
 
 
 
@@ -68,9 +71,7 @@ def upload_attachments(
 
             filename = storage.upload(
     file,
-    current_app.config[
-        "ATTACHMENT_UPLOAD_FOLDER"
-    ]
+    get_attachment_folder()
 )
             saved_files.append(filename)
 
@@ -96,10 +97,8 @@ def upload_attachments(
         for filename in saved_files:
 
            storage.delete(
-    current_app.config[
-        "ATTACHMENT_UPLOAD_FOLDER"
-    ],
-    attachment.filename
+    get_attachment_folder(),
+    filename
 )
         raise  
 
@@ -182,9 +181,7 @@ def delete_attachment(
         try:
 
            storage.delete(
-    current_app.config[
-        "ATTACHMENT_UPLOAD_FOLDER"
-    ],
+    get_attachment_folder(),
     attachment.filename
 )
 
@@ -245,9 +242,7 @@ def replace_attachment(
 
     new_filename = storage.upload(
     file,
-    current_app.config[
-        "ATTACHMENT_UPLOAD_FOLDER"
-    ]
+    get_attachment_folder()
 )
 
     attachment.filename = new_filename
@@ -271,9 +266,7 @@ def replace_attachment(
         db.session.rollback()
 
         storage.delete(
-    current_app.config[
-        "ATTACHMENT_UPLOAD_FOLDER"
-    ],
+    get_attachment_folder(),
     attachment.filename
 )
 
@@ -282,9 +275,7 @@ def replace_attachment(
     try:
 
         delete_file(
-            current_app.config[
-                "ATTACHMENT_UPLOAD_FOLDER"
-            ],
+            get_attachment_folder(),
             old_filename
         )
 
@@ -295,5 +286,65 @@ def replace_attachment(
             old_filename,
             str(e)
         )
+
+    return attachment
+
+
+def complete_presigned_upload(
+    note_id,
+    user_id,
+    filename,
+    original_filename,
+    mime_type,
+    file_size
+):
+
+    note = Note.query.filter_by(
+        id=note_id,
+        user_id=user_id
+    ).first()
+
+    if not note:
+
+        raise note_exception.NoteNotFoundException(
+            "Note not found."
+        )
+
+    storage = get_storage()
+
+    exists = storage.exists(
+        get_attachment_folder(),
+        filename
+    )
+
+    if not exists:
+
+        raise BadRequestException(
+            "File does not exist in S3."
+        )
+
+    attachment = Attachment(
+
+        filename=filename,
+
+        original_filename=
+        original_filename,
+
+        file_path=filename,
+
+        mime_type=mime_type,
+
+        file_size=file_size,
+
+        note_id=note.id,
+
+        checksum=""
+    )
+
+    db.session.add(
+        attachment
+    )
+
+    db.session.commit()
 
     return attachment

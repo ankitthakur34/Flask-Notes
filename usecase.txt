@@ -85,3 +85,17 @@ level 8 system design
         "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc4MjQ2MDg0MSwianRpIjoiMmM4MmM3NGEtOGE2MS00ZmZkLWJjNjMtMDc4ZWIxYzA1Y2U4IiwidHlwZSI6InJlZnJlc2giLCJzdWIiOiIxMiIsIm5iZiI6MTc4MjQ2MDg0MSwiY3NyZiI6IjZjMGRiYTA1LTk2NzEtNDhiMi1iZjYzLTMzZjVjYzYwZjYzMiIsImV4cCI6MTc4NTA1Mjg0MSwicm9sZSI6IlVTRVIifQ.KSbfzgKpL2ymynjXPiXbUjuxbLrIY9DD-jbZd_WKcUM"
     },
 id=12
+
+
+
+
+{
+    "data": {
+        "filename": "e3c23670-d36a-40d2-865d-3d54f0516c62.jpg",
+        "key": "attachments/e3c23670-d36a-40d2-865d-3d54f0516c62.jpg",
+        "note_id": 28,
+        "upload_url": "https://ankit-flask-notes-storage.s3.amazonaws.com/attachments/e3c23670-d36a-40d2-865d-3d54f0516c62.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAZCWWDKFSW5AA6LLO%2F20260717%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20260717T145738Z&X-Amz-Expires=300&X-Amz-SignedHeaders=content-type%3Bhost&X-Amz-Signature=65bc63663b670c183532cf2100890505587e180e1365842166e8709096a713af"
+    },
+    "message": "Upload URL generated",
+    "success": true
+}
