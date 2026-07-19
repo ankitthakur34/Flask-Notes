@@ -5,6 +5,7 @@ from app.models import (
 )
 
 
+from app.services.thumbnail_service import create_profile_thumbnails
 from app.storage.factory import get_profile_folder,get_storage
 
 def generate_profile_upload_url(
@@ -64,6 +65,9 @@ def confirm_profile_upload(
     user.profile_image = key
 
     db.session.commit()
+    create_profile_thumbnails(
+    key
+)
 
     return user
 

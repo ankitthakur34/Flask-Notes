@@ -86,3 +86,7 @@ level 8 system design
         "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc4MjQ2MDg0MSwianRpIjoiMmM4MmM3NGEtOGE2MS00ZmZkLWJjNjMtMDc4ZWIxYzA1Y2U4IiwidHlwZSI6InJlZnJlc2giLCJzdWIiOiIxMiIsIm5iZiI6MTc4MjQ2MDg0MSwiY3NyZiI6IjZjMGRiYTA1LTk2NzEtNDhiMi1iZjYzLTMzZjVjYzYwZjYzMiIsImV4cCI6MTc4NTA1Mjg0MSwicm9sZSI6IlVTRVIifQ.KSbfzgKpL2ymynjXPiXbUjuxbLrIY9DD-jbZd_WKcUM"
     },
 id=12
+
+"key": "profile/e7018870-294c-419e-9814-bfe2253cc24e.jpg",
+        "upload_url": "https://ankit-flask-notes-storage.s3.amazonaws.com/profile/e7018870-294c-419e-9814-bfe2253cc24e.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAZCWWDKFSW5AA6LLO%2F20260719%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20260719T090349Z&X-Amz-Expires=300&X-Amz-SignedHeaders=content-type%3Bhost&X-Amz-Signature=e08b9dc1f10aa203f2842900458b1460a3e743929b26838f47ea29dabd75e096"
+    },

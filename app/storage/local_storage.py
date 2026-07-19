@@ -130,3 +130,21 @@ class LocalStorageService(StorageService):
     folder
 ):
         return []
+    
+    def upload_file_object(
+    self,
+    file_obj,
+    key,
+    content_type
+):
+        raise NotImplementedError(
+        "Only supported in S3"
+    )
+
+    def get_file_object(
+    self,
+    key
+):
+        raise NotImplementedError(
+        "Only supported in S3"
+    )

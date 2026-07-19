@@ -1,6 +1,7 @@
 import boto3
 import uuid
 import os
+import io
 
 from flask import current_app
 
@@ -369,3 +370,37 @@ class S3StorageService(
         "Parts",
         []
     )
+
+    def upload_file_object(
+    self,
+    file_obj,
+    key,
+    content_type
+):
+
+        self.client.upload_fileobj(
+        file_obj,
+        self.bucket,
+        key,
+        ExtraArgs={
+            "ContentType":
+            content_type
+        }
+    )
+
+    def get_file_object(
+    self,
+    key
+):
+
+        buffer = io.BytesIO()
+
+        self.client.download_fileobj(
+        self.bucket,
+        key,
+        buffer
+    )
+
+        buffer.seek(0)
+
+        return buffer    

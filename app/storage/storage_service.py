@@ -104,3 +104,20 @@ class StorageService(ABC):
     upload_id
 ):
         pass
+
+
+    @abstractmethod
+    def upload_file_object(
+    self,
+    file_obj,
+    key,
+    content_type
+):
+        pass
+
+    @abstractmethod
+    def get_file_object(
+    self,
+    key
+):
+        pass
