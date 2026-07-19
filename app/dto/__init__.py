@@ -1,1 +1,2 @@
 from .attachment_dto import AttachmentDTO
+from .profile_image_version_dto import ProfileImageVersionDTO

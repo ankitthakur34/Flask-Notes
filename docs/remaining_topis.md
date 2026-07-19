@@ -128,3 +128,20 @@ queues
 API versioning
 
 5 days
+
+Database Optimization
+
+Time: 1 day
+
+Indexes
+Query plans
+N+1 problem
+Pagination optimization
+Redis Advanced
+
+Time: 1 day
+
+Cache Aside
+Write Through
+Distributed Locks
+Rate Limiting

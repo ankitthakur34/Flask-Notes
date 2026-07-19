@@ -13,8 +13,9 @@ from app.logging_config import logger
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.utils import success_response, error_response
 from app.services.user_service import upload_profile_image
-from app.services.profile_image_service import generate_profile_upload_url,confirm_profile_upload
+from app.services.profile_image_service import get_profile_versions,generate_profile_upload_url,confirm_profile_upload
 from app.models.user_model import User
+from app.dto import ProfileImageVersionDTO
 from flask import send_from_directory, current_app
 
 
@@ -143,5 +144,26 @@ def confirm_profile():
         data=user.to_dict(),
         message=
         "Profile updated"
+    )
+
+@user_bp.route(
+    "/profile/versions",
+    methods=["GET"]
+)
+@jwt_required()
+def profile_versions():
+
+    versions = (
+        get_profile_versions(
+            get_jwt_identity()
+        )
+    )
+
+    return success_response(
+        data=[
+            ProfileImageVersionDTO
+            .to_response(v)
+            for v in versions
+        ]
     )
 
