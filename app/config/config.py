@@ -53,6 +53,7 @@ class Config:
     UPLOAD_FOLDER,
     "attachments"
 )
+    CLOUDFRONT_URL = os.getenv("CLOUDFRONT_URL")
     ATTACHMENT_FOLDER = "attachments"
     PROFILE_FOLDER = "profile"
     PROFILE_S3_FOLDER = "profile"

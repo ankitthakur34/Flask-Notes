@@ -2,6 +2,7 @@ from PIL import Image
 import io
 
 from app.storage.factory import get_storage
+from flask import current_app
 
 
 THUMBNAIL_SIZES = {
@@ -45,14 +46,69 @@ def generate_thumbnails(
     return thumbnails
 
 
+# def get_profile_urls(
+#     profile_key
+# ):
+
+#     if not profile_key:
+#         return None
+
+#     storage = get_storage()
+
+#     filename = (
+#         profile_key.split("/")[-1]
+#     )
+
+#     return {
+
+#         "original":
+#             storage.get_download_url(
+#                 folder="profile",
+#                 filename=filename
+#             ),
+
+#         "small":
+#             storage.get_download_url(
+#                 folder=
+#                 "profile/thumbs/small",
+
+#                 filename=filename
+#             ),
+
+#         "medium":
+#             storage.get_download_url(
+#                 folder=
+#                 "profile/thumbs/medium",
+
+#                 filename=filename
+#             ),
+
+#         "large":
+#             storage.get_download_url(
+#                 folder=
+#                 "profile/thumbs/large",
+
+#                 filename=filename
+#             )
+#     }
+
+
+def get_cdn_url(
+    key
+):
+
+    return (
+        f"{current_app.config['CLOUDFRONT_URL']}"
+        f"/{key}"
+    ) 
+
+
 def get_profile_urls(
     profile_key
 ):
 
     if not profile_key:
         return None
-
-    storage = get_storage()
 
     filename = (
         profile_key.split("/")[-1]
@@ -61,32 +117,28 @@ def get_profile_urls(
     return {
 
         "original":
-            storage.get_download_url(
-                folder="profile",
-                filename=filename
+            get_cdn_url(
+                filename
             ),
 
         "small":
-            storage.get_download_url(
-                folder=
-                "profile/thumbs/small",
-
-                filename=filename
+            get_cdn_url(
+                f"thumbs/"
+                f"small/"
+                f"{filename}"
             ),
 
         "medium":
-            storage.get_download_url(
-                folder=
-                "profile/thumbs/medium",
-
-                filename=filename
+            get_cdn_url(
+                f"thumbs/"
+                f"medium/"
+                f"{filename}"
             ),
 
         "large":
-            storage.get_download_url(
-                folder=
-                "profile/thumbs/large",
-
-                filename=filename
+            get_cdn_url(
+                f"thumbs/"
+                f"large/"
+                f"{filename}"
             )
     }
