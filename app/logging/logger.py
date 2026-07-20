@@ -10,9 +10,14 @@ from app.logging.filters import (
     ErrorFilter,
     AppFilter
 )
+from app.logging.formatters import (
+    JsonFormatter
+)
+
 
 
 def configure_logger():
+    
 
     os.makedirs(
         "logs",
@@ -38,6 +43,9 @@ def configure_logger():
         "%(levelname)s | "
         "%(message)s"
     )
+    json_formatter = (
+    JsonFormatter()
+)
 
     # ==========================
     # APP LOGS
@@ -56,7 +64,7 @@ def configure_logger():
     )
 
     app_handler.setFormatter(
-        formatter
+        json_formatter
     )
 
     app_handler.addFilter(
@@ -80,7 +88,7 @@ def configure_logger():
     )
 
     error_handler.setFormatter(
-        formatter
+        json_formatter
     )
 
     error_handler.addFilter(
@@ -104,7 +112,7 @@ def configure_logger():
     )
 
     request_handler.setFormatter(
-        formatter
+        json_formatter
     )
 
     request_handler.addFilter(
