@@ -53,6 +53,35 @@ class JsonFormatter(
                     None
                 )
             )
+            log["ip"] = (
+        getattr(
+            g,
+            "client_ip",
+            None
+        )
+    )
+
+            log["user_agent"] = (
+        getattr(
+            g,
+            "user_agent",
+            None
+        )
+    )
+
+            log["environment"] = (
+        getattr(
+            g,
+            "environment",
+            None
+        )
+    )
+            log["duration_ms"] = (
+                getattr(g,"duration",None)
+            )
+
+
+
         return json.dumps(
             log
         )

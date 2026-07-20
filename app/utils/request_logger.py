@@ -1,6 +1,6 @@
 import uuid
 import time
-from flask import request,g
+from flask import current_app, request,g
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 from app.logging import logger
 
@@ -14,6 +14,21 @@ def log_request():
     g.start_time = (
         time.time()
     )
+    g.client_ip = (
+    request.remote_addr
+)
+
+    g.user_agent = (
+    request.headers.get(
+        "User-Agent"
+    )
+)
+
+    g.environment = (
+    current_app.config[
+        "ENV_NAME"
+    ]
+)
     g.user_id = None
 
     try:
@@ -29,12 +44,11 @@ def log_request():
         pass
 
     logger.info(
-
-        f"REQUEST | "
-        f"id={g.request_id} | "
-        f"method={request.method} | "
-        f"path={request.path}"
-    )
+    f"Incoming Request | "
+    f"id={g.request_id} | "
+    f"{request.method} "
+    f"{request.path}"
+)
 
 
 def log_response(response):
@@ -48,13 +62,13 @@ def log_response(response):
         ) * 1000,
         2
     )
+    g.duration = duration
 
     logger.info(
-
-        f"RESPONSE | "
-        f"id={g.request_id} | "
-        f"status={response.status_code} | "
-        f"time={duration}ms"
-    )
+    f"Request Completed | "
+    f"id={g.request_id} | "
+    f"status={response.status_code} | "
+    f"time={duration}ms"
+)
 
     return response
