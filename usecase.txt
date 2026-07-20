@@ -90,3 +90,22 @@ id=12
 "key": "profile/e7018870-294c-419e-9814-bfe2253cc24e.jpg",
         "upload_url": "https://ankit-flask-notes-storage.s3.amazonaws.com/profile/e7018870-294c-419e-9814-bfe2253cc24e.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAZCWWDKFSW5AA6LLO%2F20260719%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20260719T090349Z&X-Amz-Expires=300&X-Amz-SignedHeaders=content-type%3Bhost&X-Amz-Signature=e08b9dc1f10aa203f2842900458b1460a3e743929b26838f47ea29dabd75e096"
     },
+
+
+
+FLASK_ENV="development"
+SECRET_KEY="mysecrtkey"
+DATABASE_URL="postgresql://postgres:t%40123@localhost:5432/NotesApp"
+JWT_SECRET_KEY="myjwtsecretkey"
+MAIL_USERNAME = "ankitsinghtur6268@gmail.com"
+MAIL_PASSWORD = "dxphiqkvxdeyi"
+
+
+AWS_ACCESS_KEY_ID="AKIAZCWWDK6LLO"
+AWS_SECRET_ACCESS_KEY="HUKVu2oKiiH1wxmgd0WovfyTsPxwEXml7"
+AWS_REGION=ap-south-1
+AWS_BUCKET_NAME=ankit-flask-notes-storage
+CLOUDFRONT_URL="https://d3j324sdikt.cloudfront.net"
+
+UPLOAD_PROVIDER=S3
+

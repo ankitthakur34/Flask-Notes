@@ -1,6 +1,6 @@
 import json
 from app.extensions import redis_client
-from app.logging_config import logger
+from app.logging import logger
 
 def get_cached_note(user_id, note_id):
 

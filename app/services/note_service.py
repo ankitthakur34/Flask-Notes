@@ -3,7 +3,7 @@ from app.extensions import db
 from app.models.note_model import Note
 from datetime import datetime
 from app.repositories import notes_repositories
-from app.logging_config import logger
+from app.logging import logger
 from app.exceptions import note_exception
 from app.cache import get_cached_note, set_cached_note, delete_cached_note
 

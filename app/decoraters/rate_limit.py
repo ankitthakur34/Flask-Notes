@@ -9,7 +9,7 @@ from flask_jwt_extended import (
 from app.extensions import redis_client
 
 from app.exceptions.rateLimit_exception import RateLimitException
-from app.logging_config import logger
+from app.logging import logger
 
 def rate_limit(max_requests,window_seconds):
 

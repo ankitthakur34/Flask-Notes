@@ -6,7 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.services.note_service import get_notes_filter
 from app.utils import success_response
-from app.logging_config import logger
+from app.logging import logger
 from app.decoraters import rate_limit
 
 

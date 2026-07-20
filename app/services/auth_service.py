@@ -4,7 +4,7 @@ from app.exceptions import auth_exception
 from app.models import User
 from app.extensions import db
 from app.utils import generate_verification_token,verify_verification_token,send_verification_email,send_reset_email,verify_reset_token,generate_reset_token
-from app.logging_config import logger
+from app.logging import logger
 from app.tasks import send_email_task
 
 from app.repositories.user_repositories import get_user_by_email,get_user_by_id

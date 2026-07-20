@@ -1,0 +1,89 @@
+2026-07-20 18:08:16,219 | INFO | ==================================================
+2026-07-20 18:08:16,219 | INFO | ==================================================
+2026-07-20 18:08:16,219 | INFO | Email Verification : False
+2026-07-20 18:08:37,417 | INFO | ==================================================
+2026-07-20 18:08:37,417 | INFO | Application Started in testing
+2026-07-20 18:08:37,421 | INFO | ==================================================
+2026-07-20 18:08:37,421 | INFO | Email Verification : False
+2026-07-20 18:09:26,198 | INFO | ==================================================
+2026-07-20 18:09:26,198 | INFO | Application Started in testing
+2026-07-20 18:09:26,198 | INFO | ==================================================
+2026-07-20 18:09:26,198 | INFO | Email Verification : False
+2026-07-20 19:05:30,654 | INFO | REQUEST | id=0b881d39-c55d-4b4b-810e-bad75290a112 | method=GET | path=/users/12
+2026-07-20 19:05:32,505 | INFO | Fetching user: <User 12>
+2026-07-20 19:05:32,513 | INFO | User retrieved: ankit_main with email: ankitst6268@gmail.com
+2026-07-20 19:05:32,515 | INFO | RESPONSE | id=0b881d39-c55d-4b4b-810e-bad75290a112 | status=200 | time=1861.08ms
+2026-07-20 19:07:02,751 | INFO | REQUEST | id=7be7a1a4-4d68-4cb7-a73e-b1728358e46c | method=GET | path=/users/120
+2026-07-20 19:07:02,751 | WARNING | User not found: ID 120
+2026-07-20 19:07:02,751 | WARNING | User Not Found : User not found
+2026-07-20 19:07:02,759 | INFO | RESPONSE | id=7be7a1a4-4d68-4cb7-a73e-b1728358e46c | status=404 | time=8.0ms
+2026-07-20 19:07:47,030 | INFO | ==================================================
+2026-07-20 19:07:47,030 | INFO | Application Started in testing
+2026-07-20 19:07:47,034 | INFO | ==================================================
+2026-07-20 19:07:47,036 | INFO | Email Verification : False
+2026-07-20 19:07:53,190 | INFO | REQUEST | id=f45035d1-af96-4ff3-8ebb-1045afc2cf94 | method=GET | path=/test-error
+2026-07-20 19:07:53,191 | ERROR | Unhandled Exception
+Traceback (most recent call last):
+  File "E:\python L\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\python L\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\python L\app\routes\user_routes.py", line 31, in test_error
+    a = 1 / 0
+        ~~^~~
+ZeroDivisionError: division by zero
+2026-07-20 19:07:53,194 | INFO | RESPONSE | id=f45035d1-af96-4ff3-8ebb-1045afc2cf94 | status=500 | time=4.4ms
+2026-07-20 19:08:20,542 | INFO | REQUEST | id=2684a42a-16a5-4f51-922c-f0572307ead9 | method=GET | path=/users/test-error
+2026-07-20 19:08:20,542 | ERROR | Unhandled Exception
+Traceback (most recent call last):
+  File "E:\python L\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\python L\.venv\Lib\site-packages\flask\app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+  File "E:\python L\.venv\Lib\site-packages\flask\app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\python L\.venv\Lib\site-packages\flask\ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\python L\.venv\Lib\site-packages\werkzeug\routing\map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-20 19:08:20,579 | INFO | RESPONSE | id=2684a42a-16a5-4f51-922c-f0572307ead9 | status=500 | time=36.99ms
+2026-07-20 19:08:55,311 | INFO | ==================================================
+2026-07-20 19:08:55,311 | INFO | Application Started in testing
+2026-07-20 19:08:55,315 | INFO | ==================================================
+2026-07-20 19:08:55,316 | INFO | Email Verification : False
+2026-07-20 19:08:55,423 | INFO | REQUEST | id=24242ad7-dfd7-4c45-86ff-e38d9370441f | method=GET | path=/users/test-error
+2026-07-20 19:08:55,428 | ERROR | Unhandled Exception
+Traceback (most recent call last):
+  File "E:\python L\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\python L\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\python L\app\routes\user_routes.py", line 31, in test_error
+    a = 1 / 0
+        ~~^~~
+ZeroDivisionError: division by zero
+2026-07-20 19:08:55,431 | INFO | RESPONSE | id=24242ad7-dfd7-4c45-86ff-e38d9370441f | status=500 | time=8.02ms
+2026-07-20 19:37:47,619 | INFO | ==================================================
+2026-07-20 19:37:47,619 | INFO | Application Started in testing
+2026-07-20 19:37:47,619 | INFO | ==================================================
+2026-07-20 19:37:47,622 | INFO | Email Verification : False
+2026-07-20 19:40:12,817 | INFO | ==================================================
+2026-07-20 19:40:12,817 | INFO | Application Started in testing
+2026-07-20 19:40:12,826 | INFO | ==================================================
+2026-07-20 19:40:12,826 | INFO | Email Verification : False
+2026-07-20 19:44:37,977 | INFO | ==================================================
+2026-07-20 19:44:37,996 | INFO | Application Started in testing
+2026-07-20 19:44:37,998 | INFO | ==================================================
+2026-07-20 19:44:37,998 | INFO | Email Verification : False
+2026-07-20 19:44:40,446 | INFO | ==================================================
+2026-07-20 19:44:40,446 | INFO | Application Started in testing
+2026-07-20 19:44:40,446 | INFO | ==================================================
+2026-07-20 19:44:40,448 | INFO | Email Verification : False

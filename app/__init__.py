@@ -23,7 +23,7 @@ from app.utils.request_logger import log_request, log_response
 from app.swagger import swagger_config, swagger_template
 from app.cache.token_cache import is_token_blacklisted
 from app.backgroundJobs import make_celery
-
+from app.logging import logger
 
 
 
@@ -77,20 +77,20 @@ def create_app():
         "message": "Token has been revoked"
         }, 401
     
-    app.logger.info(
+    logger.info(
     "=" * 50
 )
 
-    app.logger.info(
+    logger.info(
     f"Application Started "
     f"in "
     f"{app.config['ENV_NAME']}"
 )
 
-    app.logger.info(
+    logger.info(
     "=" * 50
 )
-    app.logger.info(
+    logger.info(
     f"Email Verification : "
     f"{app.config['REQUIRE_EMAIL_VERIFICATION']}"
 )

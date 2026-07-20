@@ -3,7 +3,7 @@ from app.exceptions import user_exception,BadRequestException
 from app.models.user_model import User
 from app.extensions import db
 from app.repositories import user_repositories
-from app.logging_config import logger
+from app.logging import logger
 
 from flask import current_app
 from app.utils import error_response,success_response

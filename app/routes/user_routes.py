@@ -9,7 +9,7 @@ from app.services.user_service import (
     get_user_by_id
 )
 from app.exceptions import user_exception,BadRequestException
-from app.logging_config import logger
+from app.logging import logger
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.utils import success_response, error_response
 from app.services.user_service import upload_profile_image
@@ -24,6 +24,13 @@ user_bp = Blueprint(
     "user_bp",
     __name__
 )
+
+@user_bp.route("/users/test-error")
+def test_error():
+
+    a = 1 / 0
+
+    return {}
 
 
 

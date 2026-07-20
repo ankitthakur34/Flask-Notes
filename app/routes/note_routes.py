@@ -6,7 +6,7 @@ from app.schemas import NoteCreateSchema, NoteUpdateSchema
 from app.exceptions import note_exception
 from app.services.note_service import get_notes_filter,restore_note_service,get_trashed_notes_service
 from app.utils import success_response, error_response
-from app.logging_config import logger
+from app.logging import logger
 from app.extensions import redis_client
 from app.decoraters import rate_limit
 

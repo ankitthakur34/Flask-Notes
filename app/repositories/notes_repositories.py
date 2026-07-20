@@ -3,7 +3,7 @@ from datetime import datetime
 from app.exceptions import note_exception
 from app.models import Note
 from app.extensions import db
-from app.logging_config import logger
+from app.logging import logger
 
 
 def create_note(note):

@@ -6,7 +6,7 @@ from app.extensions import db
 from app.services.auth_service import register_user, login_user,forgot_password,reset_password
 from app.schemas import RegisterSchema,LoginSchema
 from app.exceptions import auth_exception
-from app.logging_config import logger
+from app.logging import logger
 from app.repositories.user_repositories import get_user_by_email,get_user_by_id
 from app.utils import success_response, error_response,generate_verification_token,verify_verification_token
 

@@ -1,69 +1,156 @@
+import traceback
 
-from marshmallow import Schema, fields,validates, ValidationError
-from flask import jsonify
-from app.exceptions import auth_exception, user_exception, note_exception,BadRequestException
-from app.utils import success_response, error_response
-from app.exceptions.rateLimit_exception import RateLimitException
-from app.logging_config import logger
+from marshmallow import ValidationError
+
+from app.exceptions import (
+    auth_exception,
+    user_exception,
+    note_exception,
+    BadRequestException
+)
+
+from app.exceptions.rateLimit_exception import (
+    RateLimitException
+)
+
+from app.utils import (
+    error_response
+)
+
+from app.logging import logger
+
 
 def register_error_handlers(app):
 
     @app.errorhandler(ValidationError)
     def handle_validation(error):
 
+        logger.warning(
+            f"Validation Error : "
+            f"{error.messages}"
+        )
+
         return error_response(
-        error.message,
-        404
+            error.messages,
+            400
+        )
+
+    @app.errorhandler(
+        note_exception.NoteNotFoundException
     )
-    
-    @app.errorhandler(note_exception.NoteNotFoundException)
     def handle_note_not_found(error):
 
-         return error_response(
-        error.message,
-        error.status_code
+        logger.warning(
+            f"Note Not Found : "
+            f"{error.message}"
+        )
+
+        return error_response(
+            error.message,
+            error.status_code
+        )
+
+    @app.errorhandler(
+        auth_exception.InvalidCredentialsException
     )
-    
-    @app.errorhandler(auth_exception.InvalidCredentialsException)
     def handle_auth_exception(error):
 
+        logger.warning(
+            f"Invalid Credentials : "
+            f"{error.message}"
+        )
+
         return error_response(
-        error.message,
-        error.status_code
+            error.message,
+            error.status_code
+        )
+
+    @app.errorhandler(
+        user_exception.UserNotFoundException
     )
-    
-    @app.errorhandler(user_exception.UserNotFoundException)
     def handle_user_not_found(error):
 
+        logger.warning(
+            f"User Not Found : "
+            f"{error.message}"
+        )
+
         return error_response(
-        error.message,
-        error.status_code
+            error.message,
+            error.status_code
+        )
+
+    @app.errorhandler(
+        auth_exception.ForbiddenException
     )
-    @app.errorhandler(auth_exception.ForbiddenException)
     def handle_forbidden(error):
 
+        logger.warning(
+            f"Forbidden : "
+            f"{error.message}"
+        )
+
         return error_response(
-        error.message,
-        error.status_code
+            error.message,
+            error.status_code
+        )
+
+    @app.errorhandler(
+        RateLimitException
     )
-    @app.errorhandler(RateLimitException)
     def handle_rate_limit(error):
 
-        return error_response(
-        error.message,
-        error.status_code
-    )
-    @app.errorhandler(auth_exception.EmailNotVerified)
-    def handle_usernotverified(error):
-        return error_response(
-        error.message,
-        error.status_code
-    )
-    @app.errorhandler(BadRequestException)
-    def handle_badrequest(error):
-        return error_response(
-        error.message,
-        error.status_code
-    )
+        logger.warning(
+            f"Rate Limit : "
+            f"{error.message}"
+        )
 
-    
+        return error_response(
+            error.message,
+            error.status_code
+        )
+
+    @app.errorhandler(
+        auth_exception.EmailNotVerified
+    )
+    def handle_user_not_verified(error):
+
+        logger.warning(
+            f"Email Not Verified : "
+            f"{error.message}"
+        )
+
+        return error_response(
+            error.message,
+            error.status_code
+        )
+
+    @app.errorhandler(
+        BadRequestException
+    )
+    def handle_bad_request(error):
+
+        logger.warning(
+            f"Bad Request : "
+            f"{error.message}"
+        )
+
+        return error_response(
+            error.message,
+            error.status_code
+        )
+
+    # Catch all unhandled exceptions
+    @app.errorhandler(Exception)
+    def handle_internal_error(error):
+
+        
+
+        logger.exception(
+    "Unhandled Exception"
+)
+
+        return error_response(
+            "Internal Server Error",
+            500
+        )

@@ -1,7 +1,7 @@
 from app.exceptions import user_exception
 from app.models import User
 from app.extensions import db
-from app.logging_config import logger
+from app.logging import logger
 
 
 
