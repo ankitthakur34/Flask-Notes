@@ -6,3 +6,4 @@ instance/
 *.pyc
 migrations/__pycache__/
 usecase.txt
+logs/

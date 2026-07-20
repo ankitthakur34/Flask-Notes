@@ -5,6 +5,12 @@ from logging.handlers import (
     RotatingFileHandler
 )
 
+from app.logging.filters import (
+    RequestFilter,
+    ErrorFilter,
+    AppFilter
+)
+
 
 def configure_logger():
 
@@ -21,30 +27,50 @@ def configure_logger():
         logging.INFO
     )
 
+    logger.propagate = False
+
+    # Flask debug reload imports twice
+    if logger.handlers:
+        logger.handlers.clear()
+
     formatter = logging.Formatter(
         "%(asctime)s | "
         "%(levelname)s | "
         "%(message)s"
     )
 
+    # ==========================
+    # APP LOGS
+    # ==========================
+
     app_handler = (
         RotatingFileHandler(
             "logs/app.log",
-            maxBytes=
-            10 * 1024 * 1024,
+            maxBytes=10 * 1024 * 1024,
             backupCount=5
         )
+    )
+
+    app_handler.setLevel(
+        logging.INFO
     )
 
     app_handler.setFormatter(
         formatter
     )
 
+    app_handler.addFilter(
+        AppFilter()
+    )
+
+    # ==========================
+    # ERROR LOGS
+    # ==========================
+
     error_handler = (
         RotatingFileHandler(
             "logs/error.log",
-            maxBytes=
-            10 * 1024 * 1024,
+            maxBytes=10 * 1024 * 1024,
             backupCount=5
         )
     )
@@ -57,26 +83,53 @@ def configure_logger():
         formatter
     )
 
+    error_handler.addFilter(
+        ErrorFilter()
+    )
+
+    # ==========================
+    # REQUEST LOGS
+    # ==========================
+
     request_handler = (
         RotatingFileHandler(
             "logs/request.log",
-            maxBytes=
-            10 * 1024 * 1024,
+            maxBytes=10 * 1024 * 1024,
             backupCount=5
         )
+    )
+
+    request_handler.setLevel(
+        logging.INFO
     )
 
     request_handler.setFormatter(
         formatter
     )
 
+    request_handler.addFilter(
+        RequestFilter()
+    )
+
+    # ==========================
+    # CONSOLE
+    # ==========================
+
     console_handler = (
         logging.StreamHandler()
+    )
+
+    console_handler.setLevel(
+        logging.INFO
     )
 
     console_handler.setFormatter(
         formatter
     )
+
+    # ==========================
+    # ADD HANDLERS
+    # ==========================
 
     logger.addHandler(
         app_handler
@@ -93,17 +146,8 @@ def configure_logger():
     logger.addHandler(
         console_handler
     )
-    print(logger.handlers)
-    print(os.getcwd())
-    print(
-    os.path.getsize(
-        "logs/app.log"
-    )
-)
 
     return logger
 
 
-logger = (
-    configure_logger()
-)
+logger = configure_logger()
