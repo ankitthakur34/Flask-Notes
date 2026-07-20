@@ -1,6 +1,21 @@
 from flask import Flask
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+env = os.getenv(
+    "APP_ENV",
+    "development"
+)
+
+load_dotenv(
+    f".env.{env}"
+)
 from flasgger import Swagger
-from app.config import Config
+from app.config import config_map
+
+
+
 from app.routes import note_bp, user_bp,auth_bp,note_v2_bp,attachment_bp
 from app.extensions import db,migrate,jwt,check_if_token_revoked,mail
 from app.errors import register_error_handlers
@@ -8,11 +23,16 @@ from app.utils.request_logger import log_request, log_response
 from app.swagger import swagger_config, swagger_template
 from app.cache.token_cache import is_token_blacklisted
 from app.backgroundJobs import make_celery
-import os
+
+
+
+
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(
+    config_map[env]
+)
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
@@ -56,4 +76,22 @@ def create_app():
         "success": False,
         "message": "Token has been revoked"
         }, 401
+    
+    app.logger.info(
+    "=" * 50
+)
+
+    app.logger.info(
+    f"Application Started "
+    f"in "
+    f"{app.config['ENV_NAME']}"
+)
+
+    app.logger.info(
+    "=" * 50
+)
+    app.logger.info(
+    f"Email Verification : "
+    f"{app.config['REQUIRE_EMAIL_VERIFICATION']}"
+)
     return app

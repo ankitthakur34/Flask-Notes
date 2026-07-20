@@ -6,7 +6,7 @@ load_dotenv()
 
 
 
-class Config:
+class BaseConfig:
     SECRET_KEY = os.getenv('SECRET_KEY')    
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 
@@ -15,7 +15,7 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
 
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
-    DEBUG = True if os.getenv('FLASK_ENV') == 'development' else False
+    # DEBUG = True if os.getenv('FLASK_ENV') == 'development' else False
 
     MAIL_SERVER = "smtp.gmail.com"
 
@@ -125,4 +125,3 @@ class Config:
 )
     
     UPLOAD_PROVIDER = "S3"
-

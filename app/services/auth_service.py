@@ -1,3 +1,5 @@
+from flask import current_app
+
 from app.exceptions import auth_exception
 from app.models import User
 from app.extensions import db
@@ -55,9 +57,18 @@ def login_user(data):
 
     if not user.check_password(data["password"]):
         raise auth_exception.InvalidCredentialsException()
-    if not user.is_verified:
+    if (
+        current_app.config[
+            "REQUIRE_EMAIL_VERIFICATION"
+        ]
+        and
+        not user.is_verified
+    ):
 
-        raise auth_exception.EmailNotVerified()
+        raise (
+            auth_exception
+            .EmailNotVerified()
+        )
 
     return user
 
