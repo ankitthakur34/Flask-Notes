@@ -6,6 +6,7 @@ class DevelopmentConfig(
 ):
 
     DEBUG = True
+    LOG_LEVEL = "DEBUG"
 
     ENV_NAME = "development"
 

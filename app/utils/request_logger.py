@@ -47,7 +47,11 @@ def log_request():
     f"Incoming Request | "
     f"id={g.request_id} | "
     f"{request.method} "
-    f"{request.path}"
+    f"{request.path}",
+    extra={
+        "log_type":
+        "request"
+    }
 )
 
 
@@ -68,7 +72,11 @@ def log_response(response):
     f"Request Completed | "
     f"id={g.request_id} | "
     f"status={response.status_code} | "
-    f"time={duration}ms"
+    f"time={duration}ms",
+    extra={
+        "log_type":
+        "request"
+    }
 )
 
     return response

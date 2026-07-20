@@ -17,6 +17,10 @@ class BaseConfig:
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     # DEBUG = True if os.getenv('FLASK_ENV') == 'development' else False
 
+    LOG_LEVEL = (
+        "INFO"
+    )
+
     MAIL_SERVER = "smtp.gmail.com"
 
     MAIL_PORT = 587

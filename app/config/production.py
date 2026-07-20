@@ -6,6 +6,7 @@ class ProductionConfig(
 ):
 
     DEBUG = False
+    LOG_LEVEL = "WARNING"
 
     ENV_NAME = "production"
 

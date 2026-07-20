@@ -16,7 +16,7 @@ from app.logging.formatters import (
 
 
 
-def configure_logger():
+def configure_logger(level="INFO"):
     
 
     os.makedirs(
@@ -29,8 +29,11 @@ def configure_logger():
     )
 
     logger.setLevel(
-        logging.INFO
+    getattr(
+        logging,
+        level.upper()
     )
+)
 
     logger.propagate = False
 

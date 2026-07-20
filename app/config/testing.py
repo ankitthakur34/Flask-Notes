@@ -8,6 +8,7 @@ class TestingConfig(
     DEBUG = False
 
     TESTING = True
+    LOG_LEVEL = "INFO"
 
     REQUIRE_EMAIL_VERIFICATION = False
 

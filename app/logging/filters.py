@@ -6,9 +6,13 @@ class RequestFilter(logging.Filter):
     def filter(self, record):
 
         return (
-            "REQUEST" in record.getMessage()
-            or
-            "RESPONSE" in record.getMessage()
+            getattr(
+                record,
+                "log_type",
+                None
+            )
+            ==
+            "request"
         )
 
 

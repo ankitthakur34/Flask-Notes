@@ -25,13 +25,22 @@ from app.cache.token_cache import is_token_blacklisted
 from app.backgroundJobs import make_celery
 from app.logging import logger
 
-
+from app.logging import (
+    configure_logger
+)
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(
     config_map[env]
+)
+    
+
+    configure_logger(
+    app.config[
+        "LOG_LEVEL"
+    ]
 )
     db.init_app(app)
     jwt.init_app(app)
