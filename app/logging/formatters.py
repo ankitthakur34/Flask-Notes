@@ -6,6 +6,8 @@ from flask import (
     request,
     g
 )
+
+
 class JsonFormatter(
     logging.Formatter
 ):
@@ -28,6 +30,7 @@ class JsonFormatter(
             "message":
                 record.getMessage()
         }
+
         if has_request_context():
 
             log["path"] = (
@@ -53,35 +56,56 @@ class JsonFormatter(
                     None
                 )
             )
+
             log["ip"] = (
-        getattr(
-            g,
-            "client_ip",
-            None
-        )
-    )
-
-            log["user_agent"] = (
-        getattr(
-            g,
-            "user_agent",
-            None
-        )
-    )
-
-            log["environment"] = (
-        getattr(
-            g,
-            "environment",
-            None
-        )
-    )
-            log["duration_ms"] = (
-                getattr(g,"duration",None)
+                getattr(
+                    g,
+                    "client_ip",
+                    None
+                )
             )
 
+            log["user_agent"] = (
+                getattr(
+                    g,
+                    "user_agent",
+                    None
+                )
+            )
 
+            log["environment"] = (
+                getattr(
+                    g,
+                    "environment",
+                    None
+                )
+            )
+
+            log["duration_ms"] = (
+                getattr(
+                    g,
+                    "duration",
+                    None
+                )
+            )
+
+        log["headers"] = (
+            getattr(
+                record,
+                "headers",
+                None
+            )
+        )
+
+        log["request_body"] = (
+            getattr(
+                record,
+                "request_body",
+                None
+            )
+        )
 
         return json.dumps(
-            log
+            log,
+            default=str
         )

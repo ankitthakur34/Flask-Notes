@@ -1,6 +1,8 @@
 from flask import Flask
 import os
 from dotenv import load_dotenv
+
+from app.utils import get_safe_config
 load_dotenv()
 
 env = os.getenv(
@@ -95,6 +97,11 @@ def create_app():
     f"in "
     f"{app.config['ENV_NAME']}"
 )
+    print("CONFIGURING LOGGER")
+    print(
+    logger.handlers
+)
+    
 
     logger.info(
     "=" * 50
