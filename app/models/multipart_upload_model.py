@@ -1,4 +1,6 @@
-from sqlalchemy.dialects.postgresql import ARRAY
+# from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.ext.mutable import MutableList
+
 from datetime import datetime
 
 from app.extensions import db
@@ -46,10 +48,14 @@ class MultipartUpload(db.Model):
         nullable=False
     )
 
+    # uploaded_part_numbers = db.Column(
+    #     ARRAY(db.Integer),
+    #     default=0
+    # )
     uploaded_part_numbers = db.Column(
-        ARRAY(db.Integer),
-        default=0
-    )
+    MutableList.as_mutable(db.JSON),
+    default=list
+)
 
     status = db.Column(
         db.String(50),

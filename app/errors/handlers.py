@@ -154,3 +154,11 @@ def register_error_handlers(app):
             "Internal Server Error",
             500
         )
+
+    @app.errorhandler(auth_exception.ConflictException)
+    def handle_conflict(e):
+
+        return error_response(
+        message=str(e),
+        status_code=409
+    )

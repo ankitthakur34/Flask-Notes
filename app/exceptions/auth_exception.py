@@ -24,4 +24,15 @@ class EmailNotVerified(Exception):
     ):
         self.message = message
         self.status_code = status_code
-        super().__init__(self.message)              
+        super().__init__(self.message) 
+
+class ConflictException(Exception):
+
+    def __init__(
+        self,
+        message="credential already exits",
+        status_code=403
+    ):
+        self.message = message
+        self.status_code = status_code
+        super().__init__(self.message) 

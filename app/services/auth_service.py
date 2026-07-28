@@ -8,6 +8,7 @@ from app.logging import logger
 from app.tasks import send_email_task
 
 from app.repositories.user_repositories import get_user_by_email,get_user_by_id
+from app.exceptions.auth_exception import ConflictException
 
 
 
@@ -20,6 +21,18 @@ def register_user(data):
     )
 
     user.set_password(data["password"])
+
+    if User.query.filter_by(email=data["email"]).first():
+
+        raise ConflictException(
+        "Email already exists"
+    )
+
+    if User.query.filter_by(username=data["username"]).first():
+
+        raise ConflictException(
+        "Username already exists"
+    )
 
     
 
