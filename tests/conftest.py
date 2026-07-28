@@ -2,6 +2,8 @@
 import pytest
 from tests.fixtures.user_fixture import *
 from tests.fixtures.auth_fixture import *
+from tests.fixtures.mock_email import *
+from tests.fixtures.mock_s3 import *
 from app import create_app
 from app.extensions import db
 

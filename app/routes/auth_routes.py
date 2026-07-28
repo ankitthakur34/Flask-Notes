@@ -74,35 +74,7 @@ def verify_email(token):
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
-    """
-    Login
-    ---
-    tags:
-      - Authentication
-
-    parameters:
-      - in: body
-        name: body
-
-        schema:
-          type: object
-
-          required:
-            - email
-            - password
-
-          properties:
-
-            email:
-              type: string
-
-            password:
-              type: string
-
-    responses:
-      200:
-        description: Login successful
-    """
+    
 
     data = LoginSchema().load(request.get_json())
 

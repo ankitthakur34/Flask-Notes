@@ -48,7 +48,8 @@ def register_user(data):
     logger.info(
     f"Verification URL: {verification_url}"
 )
-    send_email_task.delay(
+    try:
+        send_email_task.delay(
     user.email,
     "Verify Your Email",
     f"""
@@ -57,6 +58,12 @@ def register_user(data):
     {verification_url}
     """
 )
+    except Exception:
+
+        logger.exception(
+        "Failed to send verification email"
+    )
+
 
     return user
 
@@ -99,7 +106,7 @@ def forgot_password(email):
             f"http://localhost:5000"
             f"/reset-password/{token}"
         )
-
+    try :
         send_email_task.delay(
     user.email,
     "Reset Password",
@@ -109,6 +116,11 @@ def forgot_password(email):
     {reset_url}
     """
 )
+    except Exception:
+    
+            logger.exception(
+            "Failed to send verification email"
+        )
 
     return {
         "message":
